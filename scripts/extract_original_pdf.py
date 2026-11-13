@@ -1,13 +1,68 @@
+import sys
 import os
 import re
 import io
 import json
-import fitz # PyMuPDF
-from PIL import Image
+
+# Handle PyMuPDF import
+try:
+    import pymupdf as fitz
+except ImportError:
+    try:
+        import fitz
+    except ImportError as e:
+        sys.stderr.write(f"❌ Error importing PyMuPDF/fitz: {e}\n")
+        sys.stderr.write("Please install required dependencies: pip install -r requirements.txt (or pip install PyMuPDF Pillow)\n")
+        sys.exit(1)
+
+# Handle Pillow import
+try:
+    from PIL import Image
+except ImportError as e:
+    sys.stderr.write(f"❌ Error importing Pillow: {e}\n")
+    sys.stderr.write("Please install required dependencies: pip install -r requirements.txt (or pip install Pillow)\n")
+    sys.exit(1)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ORIG_PDF = os.path.join(BASE_DIR, 'public', 'products', 'design shopee products orginal.pdf')
-NAMED_PDF = os.path.join(BASE_DIR, 'public', 'products', 'Designs_Shopee_Product_Catalogue_Named.pdf')
+
+def find_pdf_file(possible_paths, description):
+    for p in possible_paths:
+        if os.path.isfile(p):
+            return p
+    # Try case-insensitive lookup in known directories
+    search_dirs = [
+        os.path.join(BASE_DIR, 'public', 'products'),
+        os.path.join(BASE_DIR, 'public'),
+        BASE_DIR
+    ]
+    for d in search_dirs:
+        if os.path.isdir(d):
+            for fname in os.listdir(d):
+                target_lower = [os.path.basename(p).lower() for p in possible_paths]
+                if fname.lower() in target_lower:
+                    found = os.path.join(d, fname)
+                    if os.path.isfile(found):
+                        return found
+    sys.stderr.write(f"❌ Error: Could not locate required PDF file for {description}.\n")
+    sys.stderr.write(f"Searched candidates:\n" + "\n".join(f"  - {p}" for p in possible_paths) + "\n")
+    sys.exit(1)
+
+orig_candidates = [
+    os.path.join(BASE_DIR, 'public', 'products', 'design shopee products orginal.pdf'),
+    os.path.join(BASE_DIR, 'public', 'products', 'design shopee products original.pdf'),
+    os.path.join(BASE_DIR, 'design shopee products orginal.pdf'),
+    os.path.join(BASE_DIR, 'design shopee products original.pdf'),
+]
+
+named_candidates = [
+    os.path.join(BASE_DIR, 'public', 'products', 'Designs_Shopee_Product_Catalogue_Named.pdf'),
+    os.path.join(BASE_DIR, 'public', 'products', 'designs_shopee_product_catalogue_named.pdf'),
+    os.path.join(BASE_DIR, 'Designs_Shopee_Product_Catalogue_Named.pdf'),
+    os.path.join(BASE_DIR, 'designs_shopee_product_catalogue_named.pdf'),
+]
+
+ORIG_PDF = find_pdf_file(orig_candidates, "Original Product Photos PDF")
+NAMED_PDF = find_pdf_file(named_candidates, "Named Product Catalog PDF")
 
 OUT_ORIG_DIR = os.path.join(BASE_DIR, 'public', 'products', 'original')
 OUT_THUMBS_DIR = os.path.join(BASE_DIR, 'public', 'products', 'thumbs')
