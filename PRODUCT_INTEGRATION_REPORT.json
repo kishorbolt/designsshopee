@@ -1,0 +1,18 @@
+{
+  "totalProductsInPdf": 210,
+  "totalImagesExtracted": 210,
+  "successfullyMatched": 210,
+  "missingImages": 0,
+  "sourcePdf": "design shopee products orginal.pdf (13.87 MB)",
+  "maxResolution": "2000x2000",
+  "minResolution": "291x239",
+  "internalIdsRemovedFromUi": true,
+  "categories": {
+    "Baby & Kids Essentials": 16,
+    "Home Living & Decor": 81,
+    "Party, Gifts & Novelties": 11,
+    "Fashion, Sports & Travel": 53,
+    "Toys, Costumes & Games": 40,
+    "Kitchen & Dining": 9
+  }
+}
