@@ -38,7 +38,7 @@ export const CategoriesPage: React.FC = () => {
         {/* Quick CTA */}
         <div className="mt-16 text-center">
           <Link
-            to="/shop"
+            to="/"
             className="btn-primary text-sm sm:text-base px-8 py-3.5"
           >
             <ShoppingBag className="w-4 h-4" />

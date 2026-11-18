@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://designsshopee.in/sitemap.xml
-
+Sitemap: https://designsshopee.vercel.app/sitemap.xml

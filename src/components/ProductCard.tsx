@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle, ShoppingCart, Zap, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ShoppingCart, MessageCircle, ArrowUpRight, Layers } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { OptimizedImage } from './OptimizedImage';
@@ -12,7 +12,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, priority = false }) => {
-  const { addToCart, buyNow } = useCart();
+  const { addToCart } = useCart();
   const isTent = isPlayTent(product) || product.enquiryOnly || product.price === null;
   const whatsappUrl = generateProductWhatsAppUrl(product);
 
@@ -30,133 +30,116 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, priority = fa
     }
   };
 
-  const handleBuyNow = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!isTent) {
-      buyNow(product, 1);
-    }
-  };
-
   return (
-    <div className="group relative flex flex-col bg-white rounded-2xl border border-gray-150 overflow-hidden shadow-subtle hover:shadow-card-hover hover:border-orange-200 transition-all duration-300">
-      {/* Product Image Area - Fills 85-90% with minimal padding */}
+    <div className="group flex flex-col bg-white rounded-2xl border border-[#E8DEC8] hover:border-brand-green/40 shadow-xs hover:shadow-sm transition-all duration-200 overflow-hidden">
+      {/* Square Product Image Area with Rounded Image Container & Warm Ivory Backdrop */}
       <Link 
         to={`/product/${product.slug}`}
-        className="block relative w-full aspect-square bg-[#FBFBFB] border-b border-gray-100 overflow-hidden flex items-center justify-center p-2 sm:p-2.5"
+        className="block relative p-2 sm:p-2.5 pb-0"
+        aria-label={`View ${product.name}`}
       >
-        <OptimizedImage
-          src={product.thumbnail || product.image}
-          fallbackSrc={product.image}
-          alt={product.name}
-          priority={priority}
-          width={product.width || 400}
-          height={product.height || 400}
-          fallbackText={product.name}
-          imageClassName="transition-transform duration-300 group-hover:scale-104 drop-shadow-sm"
-          className="w-full h-full"
-        />
+        <div className="aspect-square w-full bg-[#FFFDF5] rounded-xl sm:rounded-2xl border border-[#F5EEDC] overflow-hidden flex items-center justify-center p-2 sm:p-3 relative">
+          <OptimizedImage
+            src={product.thumbnail || product.image}
+            fallbackSrc={product.image}
+            alt={product.name}
+            priority={priority}
+            width={product.width || 400}
+            height={product.height || 400}
+            fallbackText={product.name}
+            imageClassName="transition-transform duration-300 group-hover:scale-105 drop-shadow-xs"
+            className="w-full h-full"
+          />
 
-        {/* Quick View Overlay on Desktop */}
-        <div className="absolute inset-0 bg-brand-dark/15 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hidden md:flex items-center justify-center p-4">
-          <span className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/95 backdrop-blur-sm text-brand-dark text-xs font-semibold rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-200">
-            View Details <ArrowUpRight className="w-3.5 h-3.5" />
-          </span>
+          {/* Multiple Images Indicator */}
+          {product.images && product.images.length > 1 && (
+            <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#262626]/85 backdrop-blur-xs text-[#FFFDF5] text-[10px] font-bold flex items-center gap-1 shadow-xs pointer-events-none">
+              <Layers className="w-3 h-3 text-[#C6A15B]" />
+              <span>{product.images.length} photos</span>
+            </div>
+          )}
+
+          {/* Quick view indicator on hover */}
+          <div className="absolute inset-0 bg-brand-dark/5 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex items-center justify-center pointer-events-none">
+            <span className="p-1.5 bg-white/95 text-brand-green rounded-full shadow-xs">
+              <ArrowUpRight className="w-4 h-4" />
+            </span>
+          </div>
         </div>
       </Link>
 
       {/* Product Information */}
-      <div className="flex flex-col flex-1 p-3.5 sm:p-4">
-        {/* Category */}
-        <div className="text-[11px] font-semibold text-brand-orange uppercase tracking-wider mb-1 line-clamp-1">
-          {product.category}
+      <div className="flex flex-col flex-1 p-2.5 sm:p-3 pt-2 justify-between">
+        <div>
+          {/* Category Tag */}
+          <span className="text-[10px] font-bold text-brand-green uppercase tracking-wider block truncate mb-0.5">
+            {product.category}
+          </span>
+
+          {/* Product Name (2 Lines Max) */}
+          <Link 
+            to={`/product/${product.slug}`}
+            className="text-xs sm:text-sm font-bold text-[#262626] hover:text-brand-green transition-colors line-clamp-2 leading-snug mb-1"
+            title={product.name}
+          >
+            {product.name}
+          </Link>
         </div>
 
-        {/* Clean, Readable Product Name */}
-        <Link 
-          to={`/product/${product.slug}`}
-          className="text-sm sm:text-base font-bold text-brand-dark hover:text-brand-orange transition-colors line-clamp-2 leading-snug mb-2 flex-grow"
-          title={product.name}
-        >
-          {product.name}
-        </Link>
-
-        {/* Pricing */}
-        <div className="mt-auto pt-2 flex items-baseline justify-between border-t border-gray-50">
-          <div>
+        {/* Pricing & Add to Cart */}
+        <div className="pt-2 mt-auto border-t border-gray-100">
+          <div className="mb-2 min-h-[24px] flex items-baseline gap-2 flex-wrap">
             {!isTent && product.price !== null ? (
-              <span className="text-base sm:text-lg font-extrabold text-brand-dark">
-                ₹{product.price.toLocaleString('en-IN')}
-              </span>
+              <>
+                <span className="text-sm sm:text-base font-black text-[#262626]">
+                  ₹{product.price.toLocaleString('en-IN')}
+                </span>
+                {product.mrp && product.mrp > product.price && (
+                  <>
+                    <span className="text-xs text-neutral-400 line-through font-medium">
+                      ₹{product.mrp.toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[10px] font-bold text-brand-green bg-emerald-50 px-1.5 py-0.5 rounded">
+                      {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% off
+                    </span>
+                  </>
+                )}
+              </>
             ) : (
-              <span className="text-xs sm:text-sm font-semibold text-brand-orange bg-orange-50 px-2.5 py-1 rounded-full">
+              <span className="text-[11px] font-bold text-brand-green bg-[#F5EEDC] px-2 py-0.5 rounded-md inline-block">
                 Price on Request
               </span>
             )}
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        {isTent ? (
-          /* Pop-Up Kids Play Tent Exception: ONLY WhatsApp Enquiry */
-          <div className="mt-3 pt-1">
+          {/* Action Button */}
+          {isTent ? (
+            /* Pop-Up Kids Play Tent: Strictly WhatsApp Enquiry */
             <button
               onClick={handleWhatsAppClick}
               type="button"
-              className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 min-h-[44px] text-xs font-bold text-white bg-[#25D366] hover:bg-[#1faa53] rounded-xl shadow-sm transition-all duration-200 active:scale-95"
+              className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-2 text-xs font-bold text-white bg-brand-green hover:bg-brand-green-dark rounded-xl shadow-xs transition-all active:scale-95 min-h-[38px]"
               title="Enquire on WhatsApp"
             >
-              <MessageCircle className="w-4 h-4 fill-current" />
-              <span>Enquire on WhatsApp</span>
+              <MessageCircle className="w-3.5 h-3.5 fill-current text-[#F5EEDC]" />
+              <span>Enquire</span>
             </button>
-          </div>
-        ) : (
-          /* All other products: Add to Cart and Buy Now */
-          <div className="mt-3 space-y-1.5 pt-1">
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={handleAddToCart}
-                type="button"
-                className="inline-flex items-center justify-center gap-1 px-2 py-2 min-h-[42px] sm:min-h-[44px] text-xs font-bold text-brand-dark bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-xl transition-all duration-200 active:scale-95"
-                title="Add to Shopping Cart"
-              >
-                <ShoppingCart className="w-3.5 h-3.5" />
-                <span>Add to Cart</span>
-              </button>
-
-              <button
-                onClick={handleBuyNow}
-                type="button"
-                className="inline-flex items-center justify-center gap-1 px-2 py-2 min-h-[42px] sm:min-h-[44px] text-xs font-bold text-white bg-brand-orange hover:bg-[#e04c14] rounded-xl shadow-sm transition-all duration-200 active:scale-95"
-                title="Buy Now - Direct Checkout"
-              >
-                <Zap className="w-3.5 h-3.5 fill-current" />
-                <span>Buy Now</span>
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between text-[11px] pt-1 px-0.5 text-gray-500">
-              <Link 
-                to={`/product/${product.slug}`} 
-                className="hover:text-brand-orange transition-colors flex items-center gap-0.5 font-medium py-1.5"
-              >
-                <span>Details</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
-
-              <button
-                onClick={handleWhatsAppClick}
-                type="button"
-                className="hover:text-[#25D366] transition-colors flex items-center gap-1 font-semibold py-1.5 min-h-[36px]"
-                title="Enquire on WhatsApp"
-              >
-                <MessageCircle className="w-3 h-3 fill-current text-[#25D366]" />
-                <span>WhatsApp</span>
-              </button>
-            </div>
-          </div>
-        )}
+          ) : (
+            /* Standard Products: Forest Green Add to Cart */
+            <button
+              onClick={handleAddToCart}
+              type="button"
+              className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-2 text-xs font-bold text-white bg-brand-green hover:bg-brand-green-dark rounded-xl shadow-xs transition-all active:scale-95 min-h-[38px]"
+              title="Add to Shopping Cart"
+            >
+              <ShoppingCart className="w-3.5 h-3.5" />
+              <span>Add to Cart</span>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
 };
+
+export default ProductCard;

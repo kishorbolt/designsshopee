@@ -48,7 +48,7 @@ export const CheckoutPage: React.FC = () => {
           <p className="text-sm text-brand-muted mb-6">
             Your shopping cart is currently empty. Add products to your cart before proceeding to checkout.
           </p>
-          <Link to="/shop" className="btn-primary w-full text-sm">
+          <Link to="/" className="btn-primary w-full text-sm">
             Browse Store Catalog
           </Link>
         </div>

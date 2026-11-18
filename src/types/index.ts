@@ -6,10 +6,14 @@ export interface Product {
   category: string;
   image: string;
   thumbnail: string;
+  images?: string[];
+  thumbnails?: string[];
   width: number;
   height: number;
   aspectRatio: number;
   price: number | null;
+  mrp?: number | null;
+  mrpDisplay?: string | null;
   priceDisplay: string;
   hasPrice: boolean;
   enquiryOnly?: boolean;
@@ -58,6 +62,7 @@ export interface CartItem {
   image: string;
   thumbnail: string;
   price: number;
+  mrp?: number | null;
   quantity: number;
 }
 

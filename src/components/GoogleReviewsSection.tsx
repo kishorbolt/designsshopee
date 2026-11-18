@@ -51,14 +51,14 @@ const getInitials = (name: string): string => {
 
 // Avatar background colors based on name hash
 const AVATAR_COLORS = [
-  'bg-orange-500 text-white',
-  'bg-amber-500 text-white',
-  'bg-blue-600 text-white',
-  'bg-emerald-600 text-white',
-  'bg-indigo-600 text-white',
-  'bg-rose-500 text-white',
-  'bg-teal-600 text-white',
-  'bg-purple-600 text-white',
+  'bg-brand-green text-white',
+  'bg-stone-700 text-white',
+  'bg-teal-800 text-white',
+  'bg-emerald-800 text-white',
+  'bg-amber-700 text-white',
+  'bg-[#C6A15B] text-white',
+  'bg-neutral-800 text-white',
+  'bg-cyan-800 text-white',
 ];
 
 const getAvatarColor = (name: string): string => {
@@ -84,24 +84,24 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
   const isLong = review.text.length > 130 || review.text.split('\n').length > 3;
 
   return (
-    <div className="h-full flex flex-col justify-between bg-white rounded-2xl p-5 sm:p-6 border border-gray-150 shadow-sm hover:shadow-card-hover transition-all duration-300 relative group">
+    <div className="h-full flex flex-col justify-between bg-[#FFFDF5] rounded-2xl p-5 sm:p-6 border border-[#E8DEC8] shadow-xs hover:shadow-sm transition-all duration-200 relative group">
       {/* Top Header: Avatar, Name, Star Rating */}
       <div>
         <div className="flex items-start justify-between gap-3 mb-3.5">
           <div className="flex items-center gap-3 min-w-0">
             <div 
-              className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm tracking-wider flex-shrink-0 shadow-sm ${avatarClass}`}
+              className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm tracking-wider flex-shrink-0 shadow-xs ${avatarClass}`}
               aria-hidden="true"
             >
               {initials}
             </div>
             <div className="min-w-0">
-              <h4 className="text-sm sm:text-base font-extrabold text-brand-dark truncate leading-snug">
+              <h4 className="text-sm sm:text-base font-bold text-[#262626] truncate leading-snug">
                 {review.name}
               </h4>
-              <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-medium">
-                <span className="text-green-700 font-semibold flex items-center gap-0.5">
-                  <CheckCircle2 className="w-3 h-3 text-green-600 inline" />
+              <div className="flex items-center gap-1.5 text-[11px] text-[#262626]/65 font-medium">
+                <span className="text-brand-green font-semibold flex items-center gap-0.5">
+                  <CheckCircle2 className="w-3 h-3 text-brand-green inline" />
                   Verified
                 </span>
                 <span>•</span>
@@ -111,19 +111,19 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
           </div>
 
           {/* Star Rating Badge */}
-          <div className="flex items-center gap-0.5 bg-[#FFFBF0] px-2 py-1 rounded-lg border border-amber-200/60 flex-shrink-0">
+          <div className="flex items-center gap-0.5 bg-[#F5EEDC] px-2 py-1 rounded-lg border border-[#E8DEC8] flex-shrink-0">
             {[...Array(review.rating)].map((_, i) => (
-              <Star key={i} className="w-3.5 h-3.5 text-[#FBBC05] fill-[#FBBC05]" />
+              <Star key={i} className="w-3.5 h-3.5 text-[#C6A15B] fill-[#C6A15B]" />
             ))}
           </div>
         </div>
 
         {/* Review Text / Photo Note */}
-        <div className="mt-2 text-xs sm:text-sm text-gray-700 leading-relaxed">
+        <div className="mt-2 text-xs sm:text-sm text-[#262626]/85 leading-relaxed">
           {review.text ? (
             <div>
               <p 
-                className={`whitespace-pre-line text-neutral-700 transition-all duration-200 ${
+                className={`whitespace-pre-line text-[#262626]/85 transition-all duration-200 ${
                   !isExpanded && isLong ? 'line-clamp-4' : ''
                 }`}
               >
@@ -134,7 +134,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
                 <button
                   type="button"
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="mt-2 text-xs font-bold text-brand-orange hover:text-[#e04c14] focus:outline-none focus:underline inline-flex items-center gap-1 min-h-[32px] py-1"
+                  className="mt-2 text-xs font-bold text-brand-green hover:underline focus:outline-none inline-flex items-center gap-1 min-h-[32px] py-1"
                   aria-label={isExpanded ? `Show less review for ${review.name}` : `Read more review for ${review.name}`}
                 >
                   {isExpanded ? 'Read Less ▲' : 'Read More ▼'}
@@ -142,9 +142,9 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
               )}
             </div>
           ) : (
-            <div className="p-3 rounded-xl bg-orange-50/60 border border-orange-100 flex items-center gap-2.5 text-xs text-brand-dark">
-              <Camera className="w-4 h-4 text-brand-orange flex-shrink-0" />
-              <span className="font-medium text-gray-600">
+            <div className="p-3 rounded-xl bg-[#F5EEDC] border border-[#E8DEC8] flex items-center gap-2.5 text-xs text-[#262626]">
+              <Camera className="w-4 h-4 text-brand-green flex-shrink-0" />
+              <span className="font-medium text-[#262626]/65">
                 {review.photoNote || 'Photo review submitted on Google Maps'}
               </span>
             </div>
@@ -153,13 +153,13 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
       </div>
 
       {/* Card Footer: Verified Google Badge */}
-      <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
-        <span className="inline-flex items-center gap-1">
+      <div className="mt-4 pt-3 border-t border-[#E8DEC8]/60 flex items-center justify-between text-[11px] text-[#262626]/60">
+        <span className="inline-flex items-center gap-1 text-[#262626]/65">
           <GoogleLogoIcon className="w-3.5 h-3.5" />
           <span>Vellore Showroom Visit</span>
         </span>
         {review.hasPhotos && (
-          <span className="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
+          <span className="inline-flex items-center gap-1 text-brand-green bg-[#F5EEDC] px-2 py-0.5 rounded-full font-bold">
             <Camera className="w-3 h-3" />
             Photos
           </span>
@@ -253,55 +253,55 @@ export const GoogleReviewsSection: React.FC = () => {
   return (
     <section 
       id="google-reviews"
-      className="py-16 sm:py-20 md:py-24 bg-white border-t border-gray-150 relative overflow-hidden"
+      className="py-14 sm:py-20 md:py-24 bg-[#F5EEDC] border-y border-[#E8DEC8] relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm text-xs font-bold uppercase tracking-wider text-gray-700 mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFFDF5] border border-[#E8DEC8] shadow-xs text-xs font-bold uppercase tracking-wider text-brand-green mb-3">
             <GoogleLogoIcon className="w-4 h-4" />
             <span>Google Customer Reviews</span>
           </div>
           
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-brand-dark tracking-tight leading-tight">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-[#262626] tracking-tight leading-tight">
             What Our Customers Say
           </h2>
           
-          <p className="text-sm sm:text-base text-brand-muted mt-2.5 max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-[#262626]/75 mt-2 max-w-xl mx-auto font-medium">
             Real experiences from customers who visited DESIGNS SHOPEE, Vellore.
           </p>
         </div>
 
         {/* Top Google Business Profile Verification Banner */}
-        <div className="max-w-4xl mx-auto mb-10 bg-brand-soft rounded-3xl p-6 sm:p-8 border border-orange-100 shadow-subtle flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="max-w-4xl mx-auto mb-10 bg-[#FFFDF5] rounded-3xl p-6 sm:p-8 border border-[#E8DEC8] shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-            <div className="w-16 h-16 rounded-2xl bg-white border border-gray-150 shadow-sm flex items-center justify-center p-3 flex-shrink-0">
+            <div className="w-16 h-16 rounded-2xl bg-[#F5EEDC] border border-[#E8DEC8] shadow-xs flex items-center justify-center p-3 flex-shrink-0">
               <GoogleLogoIcon className="w-10 h-10" />
             </div>
             <div>
               <div className="flex items-center justify-center sm:justify-start gap-2">
-                <h3 className="text-xl sm:text-2xl font-black text-brand-dark">
+                <h3 className="text-xl sm:text-2xl font-black text-[#262626]">
                   DESIGNS SHOPEE
                 </h3>
                 <span title="Verified Business">
-                  <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-brand-green flex-shrink-0" />
                 </span>
               </div>
-              <p className="text-xs text-gray-600 mt-1 flex items-center justify-center sm:justify-start gap-1">
-                <MapPin className="w-3.5 h-3.5 text-brand-orange flex-shrink-0" />
+              <p className="text-xs text-[#262626]/70 mt-1 flex items-center justify-center sm:justify-start gap-1">
+                <MapPin className="w-3.5 h-3.5 text-brand-green flex-shrink-0" />
                 <span>9, Katpadi Rd, beside Pachaiyappas Silks, Thottapalayam, Vellore</span>
               </p>
               
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-2.5">
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-4 h-4 text-[#FBBC05] fill-[#FBBC05]" />
+                    <Star key={s} className="w-4 h-4 text-[#C6A15B] fill-[#C6A15B]" />
                   ))}
                 </div>
-                <span className="text-xs font-bold text-gray-800">5.0 / 5.0</span>
-                <span className="text-xs text-gray-500">•</span>
-                <span className="text-xs font-semibold text-brand-orange">
+                <span className="text-xs font-bold text-[#262626]">5.0 / 5.0</span>
+                <span className="text-xs text-[#262626]/50">•</span>
+                <span className="text-xs font-bold text-brand-green">
                   {reviews.length} Verified Customer Reviews
                 </span>
               </div>
@@ -314,7 +314,7 @@ export const GoogleReviewsSection: React.FC = () => {
               href={reviewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 py-3 px-5 bg-[#4285F4] hover:bg-[#3367D6] text-white rounded-2xl font-bold text-xs sm:text-sm shadow-sm hover:shadow transition-all duration-200 active:scale-[0.99] min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 py-3 px-5 bg-brand-green hover:bg-brand-green-dark text-white rounded-xl font-bold text-xs sm:text-sm shadow-xs transition-all duration-200 active:scale-[0.99] min-h-[44px]"
             >
               <GoogleLogoIcon className="w-4 h-4" />
               <span>View All Google Reviews</span>
@@ -325,11 +325,11 @@ export const GoogleReviewsSection: React.FC = () => {
               href={reviewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-white hover:bg-gray-50 text-gray-700 border border-gray-250 rounded-2xl font-bold text-xs transition-colors shadow-xs min-h-[44px]"
+              className="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-[#F5EEDC] hover:bg-[#ebd9bd] text-[#262626] border border-[#E8DEC8] rounded-xl font-bold text-xs transition-colors shadow-xs min-h-[44px]"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-brand-orange" />
+              <MessageSquare className="w-3.5 h-3.5 text-brand-green" />
               <span>Write a Google Review</span>
-              <ExternalLink className="w-3 h-3 text-gray-400" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#262626]/60" />
             </a>
           </div>
         </div>
@@ -337,24 +337,24 @@ export const GoogleReviewsSection: React.FC = () => {
         {/* View Mode Toggle & Navigation Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm font-bold text-brand-dark">
+            <span className="text-xs sm:text-sm font-bold text-[#262626]">
               Original Customer Reviews ({reviews.length})
             </span>
-            <span className="text-xs text-gray-500 hidden sm:inline">
+            <span className="text-xs text-[#262626]/65 font-medium hidden sm:inline">
               • Showing page {currentIndex + 1} of {totalPages}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
             {/* View Toggle */}
-            <div className="bg-gray-100 p-1 rounded-xl flex items-center border border-gray-200">
+            <div className="bg-[#FFFDF5] p-1 rounded-xl flex items-center border border-[#E8DEC8]">
               <button
                 type="button"
                 onClick={() => setViewMode('carousel')}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px] ${
                   viewMode === 'carousel' 
-                    ? 'bg-white text-brand-orange shadow-xs' 
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-brand-green text-white shadow-xs' 
+                    : 'text-[#262626] hover:text-brand-green'
                 }`}
                 title="Carousel View"
                 aria-label="Switch to carousel view"
@@ -368,8 +368,8 @@ export const GoogleReviewsSection: React.FC = () => {
                 onClick={() => setViewMode('grid')}
                 className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px] ${
                   viewMode === 'grid' 
-                    ? 'bg-white text-brand-orange shadow-xs' 
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-brand-green text-white shadow-xs' 
+                    : 'text-[#262626] hover:text-brand-green'
                 }`}
                 title="Grid View (All Reviews)"
                 aria-label="Switch to grid view"
@@ -379,13 +379,13 @@ export const GoogleReviewsSection: React.FC = () => {
               </button>
             </div>
 
-            {/* Carousel Arrow Controls (only in carousel mode) */}
+            {/* Carousel Arrow Controls */}
             {viewMode === 'carousel' && (
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={handlePrev}
-                  className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:border-brand-orange hover:text-brand-orange flex items-center justify-center text-gray-700 shadow-xs transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                  className="w-10 h-10 rounded-xl bg-[#FFFDF5] hover:bg-white text-[#262626] hover:text-brand-green flex items-center justify-center shadow-xs transition-all active:scale-95 border border-[#E8DEC8] focus:outline-none"
                   aria-label="Previous customer reviews"
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -393,7 +393,7 @@ export const GoogleReviewsSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="w-10 h-10 rounded-xl bg-white border border-gray-200 hover:border-brand-orange hover:text-brand-orange flex items-center justify-center text-gray-700 shadow-xs transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-orange/40"
+                  className="w-10 h-10 rounded-xl bg-[#FFFDF5] hover:bg-white text-[#262626] hover:text-brand-green flex items-center justify-center shadow-xs transition-all active:scale-95 border border-[#E8DEC8] focus:outline-none"
                   aria-label="Next customer reviews"
                 >
                   <ChevronRight className="w-5 h-5" />
@@ -430,8 +430,8 @@ export const GoogleReviewsSection: React.FC = () => {
                   onClick={() => setCurrentIndex(pageIdx)}
                   className={`h-2.5 rounded-full transition-all min-w-[10px] min-h-[44px] flex items-center justify-center ${
                     currentIndex === pageIdx
-                      ? 'w-8 bg-brand-orange'
-                      : 'w-2.5 bg-gray-300 hover:bg-gray-400'
+                      ? 'w-8 bg-brand-green'
+                      : 'w-2.5 bg-[#E8DEC8] hover:bg-brand-green/40'
                   }`}
                   aria-label={`Go to review page ${pageIdx + 1}`}
                 >
@@ -452,11 +452,11 @@ export const GoogleReviewsSection: React.FC = () => {
         )}
 
         {/* Bottom Google Verified Footnote */}
-        <div className="mt-12 text-center border-t border-gray-150 pt-6">
-          <p className="text-xs text-gray-500 flex items-center justify-center gap-2">
+        <div className="mt-12 text-center border-t border-[#E8DEC8] pt-6">
+          <p className="text-xs text-[#262626]/70 flex items-center justify-center gap-2 font-medium">
             <GoogleLogoIcon className="w-4 h-4 flex-shrink-0" />
             <span>
-              All reviews are genuine Google Maps visitor ratings for <strong>DESIGNS SHOPEE</strong>, 9, Katpadi Rd, Vellore.
+              All reviews are genuine Google Maps visitor ratings for <strong className="text-[#262626]">DESIGNS SHOPEE</strong>, 9, Katpadi Rd, Vellore.
             </span>
           </p>
         </div>
@@ -465,4 +465,5 @@ export const GoogleReviewsSection: React.FC = () => {
     </section>
   );
 };
+
 export default GoogleReviewsSection;

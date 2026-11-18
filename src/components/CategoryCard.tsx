@@ -11,7 +11,7 @@ interface CategoryCardProps {
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   return (
     <Link
-      to={`/shop?category=${encodeURIComponent(category.name)}`}
+      to={`/?category=${encodeURIComponent(category.name)}`}
       className="group relative flex flex-col rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-subtle hover:shadow-card-hover transition-all duration-300 transform hover:-translate-y-1"
     >
       {/* Category Image Box */}

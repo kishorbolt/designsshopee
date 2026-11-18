@@ -93,6 +93,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           image: product.image,
           thumbnail: product.thumbnail || product.image,
           price: product.price as number,
+          mrp: product.mrp || null,
           quantity: qty
         };
         return [...prevItems, newItem];

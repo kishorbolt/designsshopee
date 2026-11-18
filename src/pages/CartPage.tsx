@@ -35,7 +35,7 @@ export const CartPage: React.FC = () => {
           </p>
 
           <Link
-            to="/shop"
+            to="/"
             className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 bg-brand-orange hover:bg-[#e04c14] text-white rounded-2xl font-bold text-sm shadow-md hover:shadow-lg transition-all duration-200"
           >
             <span>Explore Store Catalog</span>
@@ -63,7 +63,7 @@ export const CartPage: React.FC = () => {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/shop')}
+              onClick={() => navigate('/')}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-600 hover:text-brand-orange transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -120,8 +120,14 @@ export const CartPage: React.FC = () => {
                           >
                             {item.name}
                           </Link>
-                          <div className="text-xs text-gray-500 mt-1 font-medium">
-                            Unit Price: <span className="font-bold text-brand-dark">₹{item.price.toLocaleString('en-IN')}</span>
+                          <div className="text-xs text-gray-500 mt-1 font-medium flex items-baseline gap-2">
+                            <span>Unit Price:</span>
+                            <span className="font-bold text-brand-dark">₹{item.price.toLocaleString('en-IN')}</span>
+                            {item.mrp && item.mrp > item.price && (
+                              <span className="text-neutral-400 line-through text-[11px]">
+                                ₹{item.mrp.toLocaleString('en-IN')}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -235,14 +241,14 @@ export const CartPage: React.FC = () => {
               <div className="pt-2 space-y-3">
                 <Link
                   to="/checkout"
-                  className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-brand-orange hover:bg-[#e04c14] active:scale-[0.99] text-white rounded-2xl font-bold text-base shadow-md hover:shadow-lg transition-all duration-200"
+                  className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 bg-brand-orange hover:bg-brand-orange-hover active:scale-[0.99] text-white rounded-2xl font-bold text-base shadow-md hover:shadow-lg transition-all duration-200"
                 >
                   <span>Proceed to Checkout</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
                 <Link
-                  to="/shop"
+                  to="/#catalogue"
                   className="w-full inline-flex items-center justify-center py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-xl text-xs font-semibold transition-colors"
                 >
                   <span>Continue Browsing Catalog</span>

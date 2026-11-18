@@ -1,44 +1,37 @@
 [
   {
+    "name": "Smart Gadgets & Electronics",
+    "slug": "smart-gadgets-electronics",
+    "count": 1,
+    "image": "/products/thumbs/product-211.webp",
+    "featuredProductId": "product-211"
+  },
+  {
     "name": "Baby & Kids Essentials",
     "slug": "baby-kids-essentials",
-    "count": 16,
-    "image": "/products/thumbs/product-001.webp",
-    "featuredProductId": "product-001"
-  },
-  {
-    "name": "Home Living & Decor",
-    "slug": "home-living-decor",
-    "count": 81,
-    "image": "/products/thumbs/product-002.webp",
-    "featuredProductId": "product-002"
-  },
-  {
-    "name": "Party, Gifts & Novelties",
-    "slug": "party-gifts-novelties",
-    "count": 11,
-    "image": "/products/thumbs/product-006.webp",
-    "featuredProductId": "product-006"
-  },
-  {
-    "name": "Fashion, Sports & Travel",
-    "slug": "fashion-sports-travel",
-    "count": 53,
-    "image": "/products/thumbs/product-015.webp",
-    "featuredProductId": "product-015"
+    "count": 1,
+    "image": "/products/thumbs/product-212.webp",
+    "featuredProductId": "product-212"
   },
   {
     "name": "Toys, Costumes & Games",
     "slug": "toys-costumes-games",
-    "count": 40,
-    "image": "/products/thumbs/product-019.webp",
-    "featuredProductId": "product-019"
+    "count": 1,
+    "image": "/products/thumbs/product-213.webp",
+    "featuredProductId": "product-213"
   },
   {
-    "name": "Kitchen & Dining",
-    "slug": "kitchen-dining",
-    "count": 9,
-    "image": "/products/thumbs/product-025.webp",
-    "featuredProductId": "product-025"
+    "name": "Home Living & Decor",
+    "slug": "home-living-decor",
+    "count": 1,
+    "image": "/products/thumbs/product-214.webp",
+    "featuredProductId": "product-214"
+  },
+  {
+    "name": "Party, Gifts & Novelties",
+    "slug": "party-gifts-novelties",
+    "count": 1,
+    "image": "/products/thumbs/product-215.webp",
+    "featuredProductId": "product-215"
   }
 ]

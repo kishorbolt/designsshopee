@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, MessageCircle, Menu, X, MapPin, ShoppingCart } from 'lucide-react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { 
+  Search, 
+  MessageCircle, 
+  Menu, 
+  X, 
+  ShoppingCart, 
+  ChevronRight, 
+  MapPin, 
+  Phone,
+  Info,
+  Grid,
+  Sparkles
+} from 'lucide-react';
 import { STORE_DETAILS } from '../utils/constants';
 import { useCart } from '../context/CartContext';
 import { generateGeneralWhatsAppUrl, openWhatsApp } from '../utils/whatsapp';
+import categoriesData from '../data/categories.json';
+import productsData from '../data/products.json';
+import { Category } from '../types';
 
 export const Header: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -14,63 +28,70 @@ export const Header: React.FC = () => {
   const { totalItems } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
+  // Sync search input with URL search param
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const q = searchParams.get('search');
+    if (q) {
+      setSearchQuery(q);
+    }
+  }, [searchParams]);
 
-  // Close mobile menu on route change
+  // Close mobile menu and search on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-    setSearchOpen(false);
   }, [location.pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}#catalogue`);
+      setSearchOpen(false);
+    } else {
+      navigate('/#catalogue');
       setSearchOpen(false);
     }
   };
 
-  const navLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Shop Catalog', path: '/shop' },
-    { label: 'Categories', path: '/categories' },
-    { label: 'About Us', path: '/about' },
-    { label: 'Showroom & Contact', path: '/contact' },
-  ];
-
   return (
-    <header className="sticky top-0 z-50 w-full bg-white transition-all duration-300">
-      {/* Top Announcement Bar */}
-      <div className="bg-brand-dark text-white text-xs py-2 px-4 transition-colors">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4">
-          <div className="flex items-center gap-2 text-center sm:text-left">
-            <span className="inline-block w-2 h-2 rounded-full bg-brand-orange animate-ping" />
-            <span className="font-medium tracking-wide">
-              Showroom Open: Katpadi Road, beside Pachaiyappas Silks, Vellore
+    <>
+      {/* 1. TOP ANNOUNCEMENT BAR (Forest Green & Warm Cream) */}
+      <div className="bg-brand-green text-brand-cream text-xs py-2 px-3 sm:px-4 border-b border-brand-green-dark">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 truncate">
+            <span className="w-2 h-2 rounded-full bg-brand-yellow flex-shrink-0 animate-ping" />
+            <span className="font-semibold truncate">
+              Vellore Showroom: 9, Katpadi Rd, beside Pachaiyappas Silks
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-gray-300">
+          <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0 text-brand-cream font-medium">
             <a 
               href={STORE_DETAILS.googleMaps.directionsUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-white flex items-center gap-1 transition-colors"
+              className="hover:text-brand-yellow hidden md:inline-flex items-center gap-1 transition-colors"
             >
-              <MapPin className="w-3.5 h-3.5 text-brand-orange" />
-              <span className="hidden md:inline">Get Directions</span>
+              <MapPin className="w-3.5 h-3.5 text-brand-yellow" />
+              <span>Directions</span>
             </a>
             
             <button
               onClick={() => openWhatsApp(generateGeneralWhatsAppUrl())}
-              className="text-brand-yellow hover:text-white flex items-center gap-1 font-semibold transition-colors"
+              className="text-brand-yellow hover:text-white inline-flex items-center gap-1 font-bold transition-colors"
             >
               <MessageCircle className="w-3.5 h-3.5 text-[#25D366] fill-current" />
               <span>WhatsApp: {STORE_DETAILS.whatsappDisplay}</span>
@@ -79,170 +100,243 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Navigation Bar */}
-      <div className={`transition-all duration-300 border-b ${
-        isScrolled ? 'py-2.5 shadow-md border-gray-100 bg-white/95 backdrop-blur-md' : 'py-3.5 border-gray-100 bg-white'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <Link to="/" className="flex items-center flex-shrink-0 group">
-            <img 
-              src="/assets/logo.png" 
-              alt="DESIGNS SHOPEE" 
-              className="h-10 sm:h-12 md:h-14 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-              style={{ maxHeight: '56px' }}
-            />
-          </Link>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-7">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`text-sm font-semibold transition-colors py-1 relative ${
-                    isActive ? 'text-brand-orange' : 'text-gray-700 hover:text-brand-orange'
-                  }`}
-                >
-                  {link.label}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-orange rounded-full" />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Right Header Actions */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            {/* Search Trigger */}
-            <button
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-gray-700 hover:text-brand-orange hover:bg-orange-50 transition-colors"
-              aria-label="Search Catalog"
-              title="Search Catalog"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-
-            {/* Shopping Cart Trigger with Live Counter Badge */}
-            <Link
-              to="/cart"
-              className="relative min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-gray-700 hover:text-brand-orange hover:bg-orange-50 transition-colors"
-              aria-label={`Shopping Cart (${totalItems} items)`}
-              title="View Shopping Cart"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              {totalItems > 0 && (
-                <span className="absolute 1 top-1 right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-brand-orange text-white text-[10px] font-black rounded-full shadow-sm">
-                  {totalItems > 99 ? '99+' : totalItems}
-                </span>
-              )}
-            </Link>
-
-            {/* Direct WhatsApp Callout Button */}
-            <button
-              onClick={() => openWhatsApp(generateGeneralWhatsAppUrl())}
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 min-h-[44px] text-xs md:text-sm font-bold text-white bg-[#25D366] hover:bg-[#20be5b] rounded-full shadow-sm hover:shadow transition-all duration-200 active:scale-95"
-            >
-              <MessageCircle className="w-4 h-4 fill-current" />
-              <span>WhatsApp Chat</span>
-            </button>
-
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-gray-700 hover:text-brand-orange hover:bg-orange-50 transition-colors"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Expandable Search Overlay */}
-      {searchOpen && (
-        <div className="border-b border-gray-200 bg-brand-soft py-3 px-4 shadow-inner animate-fade-in">
-          <div className="max-w-3xl mx-auto">
-            <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-              <Search className="absolute left-4 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search across 200+ products (e.g. lamp, drone, clock, toys, bags)..."
-                autoFocus
-                className="w-full pl-12 pr-24 py-3 bg-white border border-gray-200 rounded-full text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent shadow-sm"
-              />
+      {/* 2. MAIN NAVIGATION HEADER */}
+      <header className="sticky top-0 z-40 w-full bg-[#FFFDF5] border-b border-[#F5EEDC] shadow-xs">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-[72px] lg:h-[76px] gap-2 sm:gap-4">
+            
+            {/* Left: Mobile Menu Trigger & Store Logo */}
+            <div className="flex items-center gap-1.5 sm:gap-3">
               <button
-                type="submit"
-                className="absolute right-2 px-4 py-1.5 bg-brand-orange hover:bg-[#e04c14] text-white text-xs font-bold rounded-full transition-colors"
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                className="lg:hidden min-w-[38px] min-h-[38px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center rounded-xl text-brand-dark hover:text-brand-green hover:bg-[#F5EEDC] transition-colors"
+                aria-label="Open navigation menu"
               >
-                Search
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-            </form>
+
+              <Link to="/" className="flex items-center flex-shrink-0" aria-label="DESIGNS SHOPEE Home">
+                <img 
+                  src="/assets/logo.png" 
+                  alt="DESIGNS SHOPEE" 
+                  className="h-[44px] sm:h-[54px] lg:h-[62px] w-auto object-contain transition-all"
+                  style={{ maxHeight: '64px' }}
+                />
+              </Link>
+            </div>
+
+            {/* Center: Desktop Navigation Links */}
+            <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+              <a
+                href="/#catalogue"
+                className="text-sm font-bold text-brand-dark hover:text-brand-green transition-colors py-1"
+              >
+                Shop Catalogue ({productsData.length})
+              </a>
+
+              <Link
+                to="/about"
+                className={`text-sm font-bold transition-colors py-1 ${
+                  location.pathname === '/about'
+                    ? 'text-brand-green'
+                    : 'text-brand-dark hover:text-brand-green'
+                }`}
+              >
+                About Us
+              </Link>
+
+              <a
+                href="/#location"
+                className="text-sm font-bold text-brand-dark hover:text-brand-green transition-colors py-1"
+              >
+                Showroom Location
+              </a>
+            </nav>
+
+            {/* Right: Search, Cart, WhatsApp */}
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
+              {/* Search Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setSearchOpen(!searchOpen)}
+                className={`min-w-[38px] min-h-[38px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center rounded-full transition-colors ${
+                  searchOpen 
+                    ? 'bg-[#F5EEDC] text-brand-green' 
+                    : 'text-brand-dark hover:text-brand-green hover:bg-[#F5EEDC]'
+                }`}
+                aria-label="Search products"
+                title="Search Products"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+
+              {/* Shopping Cart Button with Forest Green Live Counter */}
+              <Link
+                to="/cart"
+                className="relative min-w-[38px] min-h-[38px] sm:min-w-[40px] sm:min-h-[40px] flex items-center justify-center rounded-full text-brand-dark hover:text-brand-green hover:bg-[#F5EEDC] transition-colors"
+                aria-label={`Shopping Cart with ${totalItems} items`}
+                title="View Shopping Cart"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {totalItems > 0 && (
+                  <span className="absolute top-0.5 right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-brand-green text-white text-[10px] font-black rounded-full shadow-xs">
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
+              </Link>
+
+              {/* Desktop WhatsApp Action Button */}
+              <button
+                type="button"
+                onClick={() => openWhatsApp(generateGeneralWhatsAppUrl())}
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 min-h-[40px] text-xs font-bold text-white bg-brand-green hover:bg-brand-green-dark rounded-full shadow-xs transition-all active:scale-95"
+                title="Chat on WhatsApp"
+              >
+                <MessageCircle className="w-4 h-4 fill-current text-[#F5EEDC]" />
+                <span>WhatsApp</span>
+              </button>
+            </div>
           </div>
         </div>
-      )}
 
-      {/* Mobile Menu Dropdown */}
+        {/* Expandable Search Input Bar */}
+        {searchOpen && (
+          <div className="border-t border-[#F5EEDC] bg-[#FFFDF5] py-2.5 px-3 sm:px-6 animate-fade-in">
+            <div className="max-w-3xl mx-auto">
+              <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+                <Search className="absolute left-3.5 w-4 h-4 text-brand-green" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search 200+ products (e.g. rc car, toy, flask, clock, bag)..."
+                  autoFocus
+                  className="w-full pl-10 pr-20 py-2 bg-white border border-[#E8DEC8] rounded-full text-xs sm:text-sm text-brand-dark focus:outline-none focus:border-brand-green focus:ring-1 focus:ring-brand-green shadow-xs"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-1.5 px-3.5 py-1 bg-brand-green hover:bg-brand-green-dark text-white text-xs font-bold rounded-full transition-colors"
+                >
+                  Search
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Slide-out Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-b border-gray-200 bg-white py-4 px-4 space-y-3 shadow-xl animate-fade-in">
-          <nav className="flex flex-col space-y-1">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
-              return (
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-brand-dark/60 backdrop-blur-xs transition-opacity animate-fade-in"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer Body */}
+          <div className="relative w-4/5 max-w-xs bg-white h-full shadow-2xl flex flex-col z-10 animate-slide-right">
+            {/* Drawer Header */}
+            <div className="p-4 bg-[#FFFDF5] border-b border-[#F5EEDC] flex items-center justify-between">
+              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center">
+                <img 
+                  src="/assets/logo.png" 
+                  alt="DESIGNS SHOPEE" 
+                  className="h-11 sm:h-12 w-auto object-contain"
+                />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-9 h-9 flex items-center justify-center rounded-xl text-brand-dark hover:bg-white"
+                aria-label="Close menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Drawer Navigation Links */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="space-y-1">
                 <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                    isActive ? 'bg-orange-50 text-brand-orange' : 'text-gray-800 hover:bg-gray-50'
+                  to="/#catalogue"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold text-brand-dark hover:bg-[#F5EEDC] transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Grid className="w-4 h-4 text-brand-green" />
+                    <span>All Products ({productsData.length})</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                </Link>
+
+                <Link
+                  to="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold transition-colors ${
+                    location.pathname === '/about'
+                      ? 'bg-[#F5EEDC] text-brand-green'
+                      : 'text-brand-dark hover:bg-[#F5EEDC]'
                   }`}
                 >
-                  {link.label}
+                  <div className="flex items-center gap-2.5">
+                    <Info className="w-4 h-4 text-brand-green" />
+                    <span>About Us</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
                 </Link>
-              );
-            })}
 
-            {/* Mobile Shopping Cart Link with Counter */}
-            <Link
-              to="/cart"
-              className="flex items-center justify-between px-4 py-2.5 rounded-xl font-bold text-sm bg-orange-50/70 text-brand-orange border border-orange-100"
-            >
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="w-4 h-4" />
-                <span>Shopping Cart</span>
+                <Link
+                  to="/cart"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-bold text-brand-dark hover:bg-[#F5EEDC] transition-colors"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <ShoppingCart className="w-4 h-4 text-brand-green" />
+                    <span>Shopping Cart</span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-brand-orange text-white text-[11px] font-black">
+                    {totalItems}
+                  </span>
+                </Link>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full bg-brand-orange text-white text-xs font-black">
-                {totalItems} {totalItems === 1 ? 'item' : 'items'}
-              </span>
-            </Link>
-          </nav>
 
-          <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
-            <button
-              onClick={() => openWhatsApp(generateGeneralWhatsAppUrl())}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#25D366] text-white rounded-xl font-bold text-sm shadow hover:bg-[#20be5b] transition-colors"
-            >
-              <MessageCircle className="w-4 h-4 fill-current" />
-              <span>Direct WhatsApp Enquiry ({STORE_DETAILS.whatsappDisplay})</span>
-            </button>
+              {/* Showroom Landmark Info */}
+              <div className="pt-2 border-t border-gray-150">
+                <div className="p-3 bg-brand-cream/60 rounded-2xl border border-brand-cream text-xs text-brand-dark space-y-2">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-4 h-4 text-brand-green flex-shrink-0 mt-0.5" />
+                    <span>Katpadi Rd, beside Pachaiyappas Silks, Vellore</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-3.5 h-3.5 text-brand-green flex-shrink-0" />
+                    <span>{STORE_DETAILS.whatsappDisplay}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <a
-              href={STORE_DETAILS.googleMaps.directionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-100 text-gray-800 rounded-xl font-semibold text-xs hover:bg-gray-200 transition-colors"
-            >
-              <MapPin className="w-4 h-4 text-brand-orange" />
-              <span>Showroom Directions (Google Maps)</span>
-            </a>
+            {/* Drawer Footer Actions */}
+            <div className="p-4 border-t border-gray-150 bg-white">
+              <button
+                type="button"
+                onClick={() => {
+                  openWhatsApp(generateGeneralWhatsAppUrl());
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-brand-green hover:bg-brand-green-dark text-white rounded-xl font-bold text-xs shadow-xs transition-colors"
+              >
+                <MessageCircle className="w-4 h-4 fill-current text-brand-yellow" />
+                <span>WhatsApp Enquiry</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 };
+
+export default Header;

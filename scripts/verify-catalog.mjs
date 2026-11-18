@@ -77,6 +77,28 @@ products.forEach((p, index) => {
     errors++;
   }
 
+  // Check gallery images existence
+  if (p.images && Array.isArray(p.images)) {
+    for (const gImg of p.images) {
+      const gPath = path.join(root, 'public', gImg.replace(/^\//, ''));
+      if (!fs.existsSync(gPath)) {
+        console.error(`❌ Broken gallery image path: ${gImg} for product ${p.id}`);
+        errors++;
+      }
+    }
+  }
+
+  // Check gallery thumbnails existence
+  if (p.thumbnails && Array.isArray(p.thumbnails)) {
+    for (const gThumb of p.thumbnails) {
+      const gtPath = path.join(root, 'public', gThumb.replace(/^\//, ''));
+      if (!fs.existsSync(gtPath)) {
+        console.error(`❌ Broken gallery thumbnail path: ${gThumb} for product ${p.id}`);
+        errors++;
+      }
+    }
+  }
+
   // Check aspect ratio
   if (!p.aspectRatio || p.aspectRatio <= 0) {
     console.error(`❌ Invalid aspectRatio: ${p.aspectRatio} for product ${p.id}`);
@@ -122,7 +144,7 @@ if (!fs.existsSync(sitemapPath)) {
   errors++;
 } else {
   const content = fs.readFileSync(sitemapPath, 'utf-8');
-  if (!content.includes('https://designsshopee.in/') || !content.includes('</urlset>')) {
+  if ((!content.includes('https://designsshopee.vercel.app') && !content.includes('https://designsshopee.in')) || !content.includes('</urlset>')) {
     console.error('❌ Malformed sitemap.xml');
     errors++;
   } else {

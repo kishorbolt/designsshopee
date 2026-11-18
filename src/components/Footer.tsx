@@ -1,58 +1,62 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, MessageCircle, Navigation, ExternalLink, ShieldCheck } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Navigation, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
 import { STORE_CONFIG, STORE_DETAILS } from '../utils/constants';
+import productsData from '../data/products.json';
 import { FacebookIcon, InstagramIcon } from './SocialIcons';
 import { generateGeneralWhatsAppUrl, openWhatsApp } from '../utils/whatsapp';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-brand-dark text-white pt-16 pb-12 border-t border-neutral-800">
+    <footer className="bg-brand-green text-[#FFFDF5] pt-14 sm:pt-16 pb-12 border-t-2 border-[#C6A15B]/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 pb-12 border-b border-neutral-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-8 pb-12 border-b border-white/15">
+          
           {/* Brand Info & Social Links */}
           <div className="space-y-4">
-            <Link to="/" className="inline-block bg-white p-3 rounded-2xl">
+            <Link to="/" className="inline-block bg-white p-2.5 rounded-2xl shadow-sm">
               <img 
                 src="/assets/logo.png" 
                 alt="DESIGNS SHOPEE Logo" 
-                className="h-10 sm:h-12 w-auto object-contain"
+                className="h-9 sm:h-10 w-auto object-contain"
               />
             </Link>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              Your premier retail destination in Vellore for fine gifts, novelties, toys, home accents, and lifestyle accessories. Discover over 200+ showroom items directly on our digital showcase.
+            
+            <p className="text-brand-cream/85 text-xs sm:text-sm leading-relaxed">
+              Your premier retail destination in Vellore for fine gifts, novelties, toys, home accents, and lifestyle accessories. Browse our showroom items directly online.
             </p>
-            <div className="pt-1 flex items-center gap-2 text-xs text-brand-yellow font-semibold">
-              <ShieldCheck className="w-4 h-4" />
+
+            <div className="pt-1 flex items-center gap-2 text-xs text-brand-yellow font-bold">
+              <ShieldCheck className="w-4 h-4 text-brand-yellow flex-shrink-0" />
               <span>Verified Showroom: Katpadi Road, Vellore</span>
             </div>
 
             {/* Official Social Media Channels */}
-            <div className="pt-3">
-              <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5">
-                Follow Us On Social Media
+            <div className="pt-2">
+              <div className="text-[11px] font-bold text-brand-yellow uppercase tracking-wider mb-2">
+                Follow Us Online
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <a
                   href={STORE_CONFIG.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="min-w-[44px] min-h-[44px] rounded-xl bg-neutral-800 hover:bg-[#1877F2] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-sm group"
+                  className="min-w-[40px] min-h-[40px] rounded-xl bg-white/10 hover:bg-[#1877F2] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-sm group"
                   aria-label="DESIGNS SHOPEE on Facebook"
                   title="Follow DESIGNS SHOPEE on Facebook"
                 >
-                  <FacebookIcon className="w-5 h-5 fill-current transition-transform group-hover:scale-110" />
+                  <FacebookIcon className="w-4 h-4 fill-current transition-transform group-hover:scale-110" />
                 </a>
 
                 <a
                   href={STORE_CONFIG.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="min-w-[44px] min-h-[44px] rounded-xl bg-neutral-800 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-sm group"
+                  className="min-w-[40px] min-h-[40px] rounded-xl bg-white/10 hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 shadow-sm group"
                   aria-label="DESIGNS SHOPEE on Instagram"
                   title="Follow DESIGNS SHOPEE on Instagram"
                 >
-                  <InstagramIcon className="w-5 h-5 fill-current transition-transform group-hover:scale-110" />
+                  <InstagramIcon className="w-4 h-4 fill-current transition-transform group-hover:scale-110" />
                 </a>
               </div>
             </div>
@@ -60,96 +64,96 @@ export const Footer: React.FC = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-brand-orange mb-4">
-              Quick Navigation
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-brand-yellow mb-4 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-brand-yellow" />
+              <span>Quick Navigation</span>
             </h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-xs sm:text-sm">
               <li>
-                <Link to="/" className="text-gray-300 hover:text-white transition-colors">
-                  Home
-                </Link>
+                <a href="/#catalogue" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Shop Catalogue ({productsData.length})
+                </a>
               </li>
               <li>
-                <Link to="/shop" className="text-gray-300 hover:text-white transition-colors">
-                  Full Product Catalog
-                </Link>
+                <a href="/#location" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Showroom Location & Directions
+                </a>
               </li>
               <li>
-                <Link to="/categories" className="text-gray-300 hover:text-white transition-colors">
-                  Shop By Category
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
+                <Link to="/about" className="text-brand-cream/80 hover:text-white transition-colors">
                   About DESIGNS SHOPEE
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
-                  Showroom & Contact
+                <Link to="/cart" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Shopping Cart
+                </Link>
+              </li>
+              <li>
+                <Link to="/checkout" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Checkout
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Product Categories */}
+          {/* Store Collections */}
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider text-brand-yellow mb-4">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-brand-yellow mb-4">
               Store Collections
             </h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-xs sm:text-sm">
               <li>
-                <Link to="/shop?category=Toys%2C+Costumes+%26+Games" className="text-gray-300 hover:text-white transition-colors">
-                  Toys, Costumes & Games
-                </Link>
+                <a href="/?search=toy#catalogue" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Toys & RC Cars
+                </a>
               </li>
               <li>
-                <Link to="/shop?category=Baby+%26+Kids+Essentials" className="text-gray-300 hover:text-white transition-colors">
-                  Baby & Kids Essentials
-                </Link>
+                <a href="/?search=gift#catalogue" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Birthday Return Gifts
+                </a>
               </li>
               <li>
-                <Link to="/shop?category=Home+Living+%26+Decor" className="text-gray-300 hover:text-white transition-colors">
-                  Home Living & Decor
-                </Link>
+                <a href="/?search=bottle#catalogue" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Kids Essentials & Bottles
+                </a>
               </li>
               <li>
-                <Link to="/shop?category=Party%2C+Gifts+%26+Novelties" className="text-gray-300 hover:text-white transition-colors">
-                  Party, Gifts & Novelties
-                </Link>
+                <a href="/?search=clock#catalogue" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Clocks & Wall Decor
+                </a>
               </li>
               <li>
-                <Link to="/shop?category=Kitchen+%26+Dining" className="text-gray-300 hover:text-white transition-colors">
-                  Kitchen & Dining
-                </Link>
+                <a href="/?search=lamp#catalogue" className="text-brand-cream/80 hover:text-white transition-colors">
+                  Novelty Lamps & Lighting
+                </a>
               </li>
               <li>
-                <Link to="/shop?category=Fashion%2C+Sports+%26+Travel" className="text-gray-300 hover:text-white transition-colors">
-                  Fashion, Sports & Travel
-                </Link>
+                <a href="/#catalogue" className="text-brand-cream/80 hover:text-white transition-colors">
+                  All {productsData.length} Showroom Items
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Contact & Location */}
+          {/* Showroom Location & Contacts */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-brand-orange mb-4">
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-brand-yellow mb-4">
               Showroom Location
             </h3>
-            <div className="text-sm text-gray-300 space-y-2 leading-relaxed">
+            <div className="text-xs sm:text-sm text-brand-cream/85 space-y-2 leading-relaxed">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-5 h-5 text-brand-orange flex-shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-brand-yellow flex-shrink-0 mt-0.5" />
                 <span>
-                  <strong>DESIGNS SHOPEE</strong><br />
+                  <strong className="text-white">DESIGNS SHOPEE</strong><br />
                   9, Katpadi Rd, beside Pachaiyappas Silks,<br />
-                  Thottapalayam, Vellore,<br />
-                  Tamil Nadu 632004, India.
+                  Thottapalayam, Vellore, Tamil Nadu 632004
                 </span>
               </div>
 
-              <div className="flex items-center gap-2.5 pt-2">
+              <div className="flex items-center gap-2 pt-1">
                 <Phone className="w-4 h-4 text-brand-yellow flex-shrink-0" />
-                <a href={`tel:${STORE_CONFIG.phone}`} className="hover:text-white transition-colors font-medium">
+                <a href={`tel:${STORE_CONFIG.phone}`} className="hover:text-white transition-colors font-bold text-white">
                   {STORE_DETAILS.phoneDisplay}
                 </a>
               </div>
@@ -157,10 +161,11 @@ export const Footer: React.FC = () => {
 
             <div className="pt-2 flex flex-col gap-2">
               <button
+                type="button"
                 onClick={() => openWhatsApp(generateGeneralWhatsAppUrl())}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-[44px] bg-[#25D366] hover:bg-[#20be5b] text-white rounded-xl text-xs font-bold transition-all duration-200"
+                className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 min-h-[42px] bg-[#F28B62] hover:bg-[#e4764b] text-white rounded-xl text-xs font-bold transition-all shadow-xs active:scale-95"
               >
-                <MessageCircle className="w-4 h-4 fill-current" />
+                <MessageCircle className="w-4 h-4 fill-current text-white" />
                 <span>Chat on WhatsApp</span>
               </button>
 
@@ -168,45 +173,28 @@ export const Footer: React.FC = () => {
                 href={STORE_DETAILS.googleMaps.directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] bg-neutral-800 hover:bg-neutral-700 text-gray-200 rounded-xl text-xs font-semibold transition-colors"
+                className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-4 min-h-[40px] bg-white/10 hover:bg-white/20 text-brand-cream rounded-xl text-xs font-semibold transition-colors"
               >
                 <Navigation className="w-3.5 h-3.5 text-brand-yellow" />
                 <span>Google Maps Directions</span>
-                <ExternalLink className="w-3 h-3 text-gray-400" />
+                <ExternalLink className="w-3 h-3 text-brand-cream/60" />
               </a>
             </div>
           </div>
         </div>
 
         {/* Copyright & Disclaimer */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-4">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-cream/70 gap-3">
           <p>
             © {new Date().getFullYear()} DESIGNS SHOPEE. All rights reserved. 9, Katpadi Rd, Thottapalayam, Vellore.
           </p>
-          <div className="flex items-center gap-3">
-            <span className="text-gray-400">Connect:</span>
-            <a 
-              href={STORE_CONFIG.facebook} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-gray-300 hover:text-[#1877F2] transition-colors inline-flex items-center gap-1.5"
-            >
-              <FacebookIcon className="w-3.5 h-3.5 fill-current" />
-              <span>Facebook</span>
-            </a>
-            <span className="text-gray-600">•</span>
-            <a 
-              href={STORE_CONFIG.instagram} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-gray-300 hover:text-[#E4405F] transition-colors inline-flex items-center gap-1.5"
-            >
-              <InstagramIcon className="w-3.5 h-3.5 fill-current" />
-              <span>Instagram</span>
-            </a>
+          <div className="flex items-center gap-2 text-brand-cream/70">
+            <span>Vellore's Favorite Toy, Gift & Novelty Destination</span>
           </div>
         </div>
       </div>
     </footer>
   );
 };
+
+export default Footer;

@@ -11,11 +11,14 @@ import {
   HelpCircle,
   ExternalLink,
   ChevronRight,
-  ZoomIn,
+  ChevronLeft,
   ShoppingCart,
   Zap,
   Plus,
-  Minus
+  Minus,
+  Layers,
+  Truck,
+  RotateCcw
 } from 'lucide-react';
 import productsData from '../data/products.json';
 import { ProductCard } from '../components/ProductCard';
@@ -40,32 +43,101 @@ export const ProductDetailPage: React.FC = () => {
   const product = products.find(p => p.slug === slug || p.id === slug);
 
   const [copied, setCopied] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  // Touch swipe states for mobile gallery
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
 
   const isTent = product ? (isPlayTent(product) || product.enquiryOnly || product.price === null) : false;
 
+  const galleryImages = product && product.images && product.images.length > 0 
+    ? product.images 
+    : (product ? [product.image] : []);
+
+  const galleryThumbs = product && product.thumbnails && product.thumbnails.length > 0 
+    ? product.thumbnails 
+    : (product ? [product.thumbnail || product.image] : []);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-    setImageLoaded(false);
+    setActiveImageIndex(0);
     setQuantity(1);
-  }, [slug]);
+
+    if (product) {
+      document.title = `${product.name} | DESIGNS SHOPEE Vellore`;
+      
+      // Inject Schema.org Product JSON-LD for Local & Product SEO
+      const schemaScriptId = 'product-json-ld';
+      let scriptTag = document.getElementById(schemaScriptId) as HTMLScriptElement | null;
+      if (!scriptTag) {
+        scriptTag = document.createElement('script');
+        scriptTag.id = schemaScriptId;
+        scriptTag.type = 'application/ld+json';
+        document.head.appendChild(scriptTag);
+      }
+
+      const productLd: Record<string, any> = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        'name': product.name,
+        'image': galleryImages.map(img => `https://designsshopee.vercel.app${img}`),
+        'description': product.description,
+        'sku': product.id,
+        'brand': {
+          '@type': 'Brand',
+          'name': 'DESIGNS SHOPEE'
+        },
+        'offers': {
+          '@type': 'Offer',
+          'url': `https://designsshopee.vercel.app/product/${product.slug}`,
+          'priceCurrency': 'INR',
+          'price': product.price || 0,
+          'itemCondition': 'https://schema.org/NewCondition',
+          'availability': 'https://schema.org/InStock',
+          'seller': {
+            '@type': 'Store',
+            'name': 'DESIGNS SHOPEE',
+            'telephone': '+919487703591',
+            'address': {
+              '@type': 'PostalAddress',
+              'streetAddress': '9, Katpadi Road, beside Pachaiyappas Silks',
+              'addressLocality': 'Thottapalayam, Vellore',
+              'addressRegion': 'Tamil Nadu',
+              'postalCode': '632004',
+              'addressCountry': 'IN'
+            }
+          }
+        }
+      };
+
+      if (isTent || product.price === null) {
+        delete productLd.offers.price;
+        productLd.offers.availability = 'https://schema.org/PreOrder';
+      }
+
+      scriptTag.text = JSON.stringify(productLd);
+    }
+
+    return () => {
+      const scriptTag = document.getElementById('product-json-ld');
+      if (scriptTag) scriptTag.remove();
+    };
+  }, [slug, product]);
 
   if (!product) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center bg-brand-soft px-4">
-        <div className="max-w-md w-full bg-white rounded-3xl p-8 text-center border border-gray-100 shadow-subtle">
-          <HelpCircle className="w-12 h-12 text-brand-orange mx-auto mb-3" />
-          <h2 className="text-2xl font-extrabold text-brand-dark">Product Not Found</h2>
-          <p className="text-sm text-brand-muted mt-2">
+      <div className="min-h-[70vh] flex items-center justify-center bg-[#FFFDF5] px-4">
+        <div className="max-w-md w-full bg-white rounded-3xl p-8 text-center border border-[#E8DEC8] shadow-xs">
+          <HelpCircle className="w-12 h-12 text-brand-green mx-auto mb-3" />
+          <h2 className="text-2xl font-black text-[#262626]">Product Not Found</h2>
+          <p className="text-sm text-[#262626]/70 mt-2">
             The item you are looking for may have been updated or moved.
           </p>
           <div className="mt-6 flex flex-col gap-2">
-            <Link to="/shop" className="btn-primary text-sm">
-              Browse Store Catalog
-            </Link>
-            <Link to="/" className="btn-secondary text-sm">
-              Back to Home
+            <Link to="/" className="inline-flex items-center justify-center gap-2 py-3 px-6 bg-brand-green text-white font-bold rounded-full text-sm">
+              Browse Complete Catalogue ({products.length} Items)
             </Link>
           </div>
         </div>
@@ -73,9 +145,38 @@ export const ProductDetailPage: React.FC = () => {
     );
   }
 
-  // Related products from same category
+  // Previous & Next Image Handlers
+  const handlePrevImage = () => {
+    setActiveImageIndex(prev => (prev > 0 ? prev - 1 : galleryImages.length - 1));
+  };
+
+  const handleNextImage = () => {
+    setActiveImageIndex(prev => (prev < galleryImages.length - 1 ? prev + 1 : 0));
+  };
+
+  // Touch Swipe Handlers for Mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > 45) {
+      handleNextImage();
+    } else if (distance < -45) {
+      handlePrevImage();
+    }
+  };
+
+  // Related products from catalogue (excluding current)
   const relatedProducts = products
-    .filter(p => p.category === product.category && p.id !== product.id)
+    .filter(p => p.id !== product.id)
     .slice(0, 4);
 
   const whatsappUrl = generateProductWhatsAppUrl(product);
@@ -85,8 +186,8 @@ export const ProductDetailPage: React.FC = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${product.name} | DESIGNS SHOPEE`,
-          text: `Check out ${product.name} at DESIGNS SHOPEE, Vellore!`,
+          title: `${product.name} | DESIGNS SHOPEE Vellore`,
+          text: `Check out ${product.name} at DESIGNS SHOPEE, 9 Katpadi Road, Vellore!`,
           url: shareUrl
         });
         return;
@@ -112,23 +213,21 @@ export const ProductDetailPage: React.FC = () => {
     }
   };
 
+  const discountPercent = product.mrp && product.price && product.mrp > product.price
+    ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+    : null;
+
   return (
-    <div className="min-h-screen bg-white py-6 sm:py-10">
+    <div className="min-h-screen bg-[#FFFDF5] text-[#262626] py-6 sm:py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs text-brand-muted mb-6 font-medium overflow-x-auto whitespace-nowrap pb-1">
-          <Link to="/" className="hover:text-brand-orange transition-colors">Home</Link>
+        <nav className="flex items-center gap-2 text-xs text-[#262626]/70 mb-6 font-medium overflow-x-auto whitespace-nowrap pb-1">
+          <Link to="/" className="hover:text-brand-green transition-colors">Home</Link>
           <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-          <Link to="/shop" className="hover:text-brand-orange transition-colors">Catalog</Link>
+          <Link to="/#catalogue" className="hover:text-brand-green transition-colors">Complete Catalogue</Link>
           <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-          <Link 
-            to={`/shop?category=${encodeURIComponent(product.category)}`}
-            className="hover:text-brand-orange transition-colors"
-          >
-            {product.category}
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-          <span className="text-brand-dark font-bold truncate max-w-[200px] sm:max-w-none">
+          <span className="text-[#262626] font-bold truncate max-w-[240px] sm:max-w-none">
             {product.name}
           </span>
         </nav>
@@ -136,90 +235,193 @@ export const ProductDetailPage: React.FC = () => {
         {/* Back Link */}
         <button
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-brand-dark mb-6 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#262626]/75 hover:text-brand-green mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to previous</span>
+          <span>Back to Catalogue</span>
         </button>
 
-        {/* Main Product Display Grid (58% image width on desktop) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pb-16 border-b border-gray-100 items-start">
-          {/* Left Column: Large High-Resolution Product Image */}
-          <div className="lg:col-span-7">
-            <div className="relative rounded-3xl overflow-hidden bg-[#FBFBFB] border border-gray-150 shadow-premium w-full aspect-square max-h-[620px] flex items-center justify-center p-4 sm:p-6">
+        {/* Main Product Display Grid (Flipkart-style Gallery on Left, Details on Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 pb-16 border-b border-[#E8DEC8] items-start">
+          
+          {/* Left Column: Flipkart-Style Product Image Gallery */}
+          <div className="lg:col-span-7 select-none">
+            
+            {/* Large Main Product Image with Swipe & Navigation */}
+            <div 
+              className="relative rounded-3xl overflow-hidden bg-white border border-[#E8DEC8] shadow-xs w-full aspect-square max-h-[580px] flex items-center justify-center p-4 sm:p-8"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               <OptimizedImage
-                src={product.image}
-                fallbackSrc={product.thumbnail}
-                alt={product.name}
+                key={galleryImages[activeImageIndex]}
+                src={galleryImages[activeImageIndex]}
+                fallbackSrc={galleryThumbs[activeImageIndex] || galleryImages[activeImageIndex]}
+                alt={`${product.name} angle ${activeImageIndex + 1}`}
                 priority={true}
                 width={product.width || 800}
                 height={product.height || 800}
                 fallbackText={product.name}
                 className="w-full h-full"
-                imageClassName="drop-shadow-sm"
+                imageClassName="transition-transform duration-300 hover:scale-105 drop-shadow-xs"
               />
 
-              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-[11px] font-semibold text-gray-600 shadow-sm flex items-center gap-1.5 pointer-events-none">
-                <ZoomIn className="w-3.5 h-3.5 text-brand-orange" />
-                <span>Original Showroom Photo</span>
-              </div>
+              {/* Prev Image Button (if multiple images) */}
+              {galleryImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={handlePrevImage}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#262626] hover:text-brand-green shadow-md flex items-center justify-center transition-all active:scale-95 border border-[#E8DEC8] z-10"
+                  aria-label="Previous product image"
+                  title="Previous image"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+              )}
+
+              {/* Next Image Button (if multiple images) */}
+              {galleryImages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={handleNextImage}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-[#262626] hover:text-brand-green shadow-md flex items-center justify-center transition-all active:scale-95 border border-[#E8DEC8] z-10"
+                  aria-label="Next product image"
+                  title="Next image"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              )}
+
+              {/* Image Count Indicator (e.g. 1/3) */}
+              {galleryImages.length > 1 ? (
+                <div className="absolute top-4 right-4 bg-[#262626]/80 backdrop-blur-xs text-white px-3 py-1 rounded-full text-xs font-bold shadow-xs flex items-center gap-1.5 pointer-events-none">
+                  <Layers className="w-3.5 h-3.5 text-[#C6A15B]" />
+                  <span>{activeImageIndex + 1} / {galleryImages.length}</span>
+                </div>
+              ) : (
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-[#262626] px-3 py-1 rounded-full text-[11px] font-semibold border border-[#E8DEC8] shadow-xs pointer-events-none">
+                  100% Genuine Photo
+                </div>
+              )}
+
+              {/* Swipe hint for mobile users */}
+              {galleryImages.length > 1 && (
+                <div className="absolute bottom-3 inset-x-0 text-center sm:hidden pointer-events-none">
+                  <span className="text-[10px] font-semibold text-[#262626]/60 bg-white/80 px-2.5 py-0.5 rounded-full border border-[#E8DEC8]">
+                    Swipe or tap thumbnails to view {galleryImages.length} angles
+                  </span>
+                </div>
+              )}
             </div>
+
+            {/* Thumbnail Carousel Row (Flipkart Style) */}
+            {galleryImages.length > 1 && (
+              <div className="flex items-center gap-2.5 sm:gap-3.5 mt-4 overflow-x-auto pb-2 scrollbar-none">
+                {galleryImages.map((img, idx) => {
+                  const isActive = idx === activeImageIndex;
+                  const thumbSrc = galleryThumbs[idx] || img;
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`relative aspect-square w-16 sm:w-20 rounded-2xl overflow-hidden border-2 transition-all p-1 bg-white flex-shrink-0 ${
+                        isActive 
+                          ? 'border-brand-green ring-2 ring-brand-green/30 scale-102 shadow-xs' 
+                          : 'border-[#E8DEC8] hover:border-brand-green/60 opacity-80 hover:opacity-100'
+                      }`}
+                      aria-label={`View angle ${idx + 1} of ${product.name}`}
+                    >
+                      <OptimizedImage
+                        src={thumbSrc}
+                        fallbackSrc={img}
+                        alt={`${product.name} angle ${idx + 1}`}
+                        className="w-full h-full"
+                        fit="contain"
+                      />
+                      {isActive && (
+                        <span className="absolute bottom-0 inset-x-0 h-1 bg-brand-green" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
           </div>
 
           {/* Right Column: Product Details, Pricing & Action Workflow */}
           <div className="lg:col-span-5 flex flex-col justify-start space-y-6">
+            
             <div>
-              <Link
-                to={`/shop?category=${encodeURIComponent(product.category)}`}
-                className="inline-block px-3 py-1 text-xs font-bold tracking-wider uppercase text-brand-orange bg-orange-50 hover:bg-orange-100 rounded-full transition-colors mb-2.5"
-              >
-                {product.category}
-              </Link>
-
-              {/* Exact Clean Product Title */}
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-brand-dark tracking-tight leading-tight">
+              {/* Product Title */}
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#262626] tracking-tight leading-tight">
                 {product.name}
               </h1>
+
+              {/* Store & Location Verification Badge */}
+              <div className="mt-2.5 flex items-center gap-2 text-xs font-semibold text-brand-green">
+                <MapPin className="w-3.5 h-3.5 text-[#C6A15B] flex-shrink-0" />
+                <span>Showroom item at Katpadi Road, beside Pachaiyappas Silks, Vellore</span>
+              </div>
             </div>
 
-            {/* Pricing Section */}
-            <div className="p-4 rounded-2xl bg-brand-soft border border-gray-100">
-              <div className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">
-                {isTent ? 'Showroom Consultation' : 'Showroom Price'}
+            {/* Pricing Section (MRP & Selling Price Extraction) */}
+            <div className="p-5 rounded-2xl bg-[#F5EEDC] border border-[#E8DEC8]">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#262626]/70 mb-1.5">
+                {isTent ? 'Showroom Consultation' : 'Showroom Retail Price'}
               </div>
-              <div className="flex items-baseline gap-3">
-                {!isTent && product.price !== null ? (
-                  <>
-                    <span className="text-3xl sm:text-4xl font-black text-brand-dark">
+
+              {!isTent && product.price !== null ? (
+                <div className="space-y-1">
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    {/* Selling Price: Larger, Bold, Prominent */}
+                    <span className="text-3xl sm:text-4xl font-black text-[#262626]">
                       ₹{product.price.toLocaleString('en-IN')}
                     </span>
-                    <span className="text-xs text-gray-500 font-medium">
-                      (Suggested showroom retail price)
-                    </span>
-                  </>
-                ) : (
-                  <div>
-                    <span className="text-2xl font-black text-brand-orange">
-                      Price on Request
-                    </span>
-                    <p className="text-xs text-brand-muted mt-1 leading-relaxed">
-                      Exclusive showroom item. Contact our team directly on WhatsApp for size variants, current price quotation, and availability.
-                    </p>
+
+                    {/* MRP: Smaller, Grey, Struck-through (only when verified) */}
+                    {product.mrp && product.mrp > product.price && (
+                      <>
+                        <span className="text-lg sm:text-xl text-neutral-400 line-through font-semibold">
+                          ₹{product.mrp.toLocaleString('en-IN')}
+                        </span>
+                        <span className="text-xs font-bold text-brand-green bg-white px-2 py-0.5 rounded-full border border-brand-green/30 shadow-xs">
+                          {discountPercent}% OFF
+                        </span>
+                      </>
+                    )}
                   </div>
-                )}
-              </div>
+
+                  <p className="text-xs text-[#262626]/70 pt-1 font-medium">
+                    Verified direct showroom price at DESIGNS SHOPEE, Vellore.
+                  </p>
+                </div>
+              ) : (
+                /* Pop-Up Kids Play Tent: Strict Enquiry Only */
+                <div>
+                  <span className="text-2xl font-black text-brand-green">
+                    Price on Request
+                  </span>
+                  <p className="text-xs text-[#262626]/80 mt-1.5 leading-relaxed font-medium">
+                    Showroom specialty item. Contact our team directly on WhatsApp for size variants, current price quotation, and availability.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Description */}
             <div className="space-y-2.5">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#262626]/70">
                 Product Details
               </h3>
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-[#262626]/85 leading-relaxed font-normal">
                 {product.description}
               </p>
-              <div className="text-xs text-gray-500 bg-gray-50 p-3.5 rounded-2xl border border-gray-100 leading-relaxed">
-                Available at <strong>DESIGNS SHOPEE</strong>, 9 Katpadi Rd, beside Pachaiyappas Silks, Thottapalayam, Vellore. Retail, custom gifting, and bulk orders welcomed.
+              
+              <div className="text-xs text-[#262626]/80 bg-white p-3.5 rounded-2xl border border-[#E8DEC8] leading-relaxed">
+                Available at <strong>DESIGNS SHOPEE</strong>, 9 Katpadi Rd, beside Pachaiyappas Silks, Thottapalayam, Vellore. Retail purchases, birthday return gifting, and WhatsApp video verification welcomed.
               </div>
             </div>
 
@@ -228,8 +430,9 @@ export const ProductDetailPage: React.FC = () => {
               /* Pop-Up Kids Play Tent Exception: ONLY WhatsApp Enquiry */
               <div className="pt-2 space-y-3">
                 <button
+                  type="button"
                   onClick={() => openWhatsApp(whatsappUrl)}
-                  className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-[#25D366] hover:bg-[#20be5b] active:scale-[0.99] text-white rounded-2xl font-bold text-base shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-[#25D366] hover:bg-[#20be5b] active:scale-[0.99] text-white rounded-2xl font-bold text-base shadow-xs hover:shadow-sm transition-all"
                 >
                   <MessageCircle className="w-5 h-5 fill-current" />
                   <span>Enquire via WhatsApp</span>
@@ -240,24 +443,26 @@ export const ProductDetailPage: React.FC = () => {
               <div className="pt-2 space-y-4">
                 {/* Quantity Selector */}
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#262626]/75">
                     Quantity:
                   </span>
-                  <div className="inline-flex items-center rounded-xl border border-gray-200 bg-white p-1 shadow-sm">
+                  <div className="inline-flex items-center rounded-xl border border-[#E8DEC8] bg-white p-1 shadow-xs">
                     <button
+                      type="button"
                       onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                      className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+                      className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg hover:bg-[#F5EEDC] text-[#262626] transition-colors"
                       title="Decrease quantity"
                       aria-label="Decrease quantity"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
-                    <span className="w-10 text-center font-bold text-sm text-brand-dark">
+                    <span className="w-10 text-center font-bold text-sm text-[#262626]">
                       {quantity}
                     </span>
                     <button
+                      type="button"
                       onClick={() => setQuantity(q => q + 1)}
-                      className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
+                      className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-lg hover:bg-[#F5EEDC] text-[#262626] transition-colors"
                       title="Increase quantity"
                       aria-label="Increase quantity"
                     >
@@ -269,16 +474,18 @@ export const ProductDetailPage: React.FC = () => {
                 {/* Primary Buy Now & Add to Cart Buttons */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
+                    type="button"
                     onClick={handleBuyNow}
-                    className="flex items-center justify-center gap-2 py-3.5 px-6 bg-brand-orange hover:bg-[#e04c14] active:scale-[0.99] text-white rounded-2xl font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all duration-200"
+                    className="flex items-center justify-center gap-2 py-3.5 px-6 bg-[#F5EEDC] hover:bg-[#ebd9bd] text-brand-green border border-[#E8DEC8] active:scale-[0.99] rounded-2xl font-bold text-sm sm:text-base shadow-xs transition-all"
                   >
-                    <Zap className="w-4 h-4 fill-current" />
+                    <Zap className="w-4 h-4 fill-current text-brand-green" />
                     <span>Buy Now</span>
                   </button>
 
                   <button
+                    type="button"
                     onClick={handleAddToCart}
-                    className="flex items-center justify-center gap-2 py-3.5 px-6 bg-brand-dark hover:bg-black active:scale-[0.99] text-white rounded-2xl font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all duration-200"
+                    className="flex items-center justify-center gap-2 py-3.5 px-6 bg-brand-green hover:bg-brand-green-dark active:scale-[0.99] text-white rounded-2xl font-bold text-sm sm:text-base shadow-xs transition-all"
                   >
                     <ShoppingCart className="w-4 h-4" />
                     <span>Add to Cart</span>
@@ -287,11 +494,12 @@ export const ProductDetailPage: React.FC = () => {
 
                 {/* Direct WhatsApp Enquiry Button */}
                 <button
+                  type="button"
                   onClick={() => openWhatsApp(whatsappUrl)}
-                  className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#1faa53] border border-[#25D366]/30 rounded-2xl font-bold text-xs sm:text-sm transition-colors"
+                  className="w-full flex items-center justify-center gap-2.5 py-3 px-4 bg-white hover:bg-[#F5EEDC] text-brand-green border border-brand-green/30 rounded-2xl font-bold text-xs sm:text-sm transition-colors shadow-xs"
                 >
                   <MessageCircle className="w-4 h-4 fill-current" />
-                  <span>Enquire about this product on WhatsApp</span>
+                  <span>Enquire about this product on WhatsApp (+91 94877 03591)</span>
                 </button>
               </div>
             )}
@@ -299,13 +507,14 @@ export const ProductDetailPage: React.FC = () => {
             {/* Share and Showroom Map Shortcuts */}
             <div className="grid grid-cols-2 gap-3 pt-2">
               <button
+                type="button"
                 onClick={handleShare}
-                className="flex items-center justify-center gap-2 py-3 px-4 min-h-[44px] bg-white border border-gray-200 hover:border-gray-300 rounded-xl text-xs font-bold text-gray-700 transition-colors shadow-sm"
+                className="flex items-center justify-center gap-2 py-3 px-4 min-h-[44px] bg-white border border-[#E8DEC8] hover:bg-[#F5EEDC] rounded-xl text-xs font-bold text-[#262626] transition-colors shadow-xs"
               >
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4 text-green-600" />
-                    <span className="text-green-600">Link Copied!</span>
+                    <Check className="w-4 h-4 text-brand-green" />
+                    <span className="text-brand-green">Link Copied!</span>
                   </>
                 ) : (
                   <>
@@ -319,46 +528,51 @@ export const ProductDetailPage: React.FC = () => {
                 href={STORE_DETAILS.googleMaps.directionsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 py-3 px-4 min-h-[44px] bg-white border border-gray-200 hover:border-brand-orange rounded-xl text-xs font-bold text-gray-700 hover:text-brand-orange transition-colors shadow-sm"
+                className="flex items-center justify-center gap-1.5 py-3 px-4 min-h-[44px] bg-white border border-[#E8DEC8] hover:bg-[#F5EEDC] rounded-xl text-xs font-bold text-brand-green transition-colors shadow-xs"
               >
-                <MapPin className="w-4 h-4 text-brand-orange" />
+                <MapPin className="w-3.5 h-3.5 text-[#C6A15B]" />
                 <span>Showroom Map</span>
-                <ExternalLink className="w-3 h-3 text-gray-400" />
+                <ExternalLink className="w-3 h-3 text-[#262626]/50" />
               </a>
             </div>
 
             {/* Trust Assurances */}
-            <div className="pt-4 border-t border-gray-100 space-y-2.5 text-xs text-gray-600">
+            <div className="pt-4 border-t border-[#E8DEC8] space-y-2.5 text-xs text-[#262626]/75">
               <div className="flex items-center gap-2.5">
-                <ShieldCheck className="w-4 h-4 text-brand-orange flex-shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-brand-green flex-shrink-0" />
                 <span>Showroom inspection & live WhatsApp video demos available</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Sparkles className="w-4 h-4 text-brand-yellow flex-shrink-0" />
+                <Sparkles className="w-4 h-4 text-[#C6A15B] flex-shrink-0" />
                 <span>Carefully packed for safe transport and gifting</span>
               </div>
+              <div className="flex items-center gap-2.5">
+                <Truck className="w-4 h-4 text-brand-green flex-shrink-0" />
+                <span>Same-day pickup in Vellore or safe courier across India</span>
+              </div>
             </div>
+
           </div>
         </div>
 
-        {/* Related Products */}
+        {/* More Products from the Catalogue */}
         {relatedProducts.length > 0 && (
           <div className="pt-16">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-orange">
-                  Similar Collection
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-green">
+                  Showroom Collection
                 </span>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-brand-dark mt-1">
-                  More in {product.category}
+                <h2 className="text-xl sm:text-2xl font-black text-[#262626] mt-1">
+                  More Products from DESIGNS SHOPEE
                 </h2>
               </div>
 
               <Link
-                to={`/shop?category=${encodeURIComponent(product.category)}`}
-                className="text-xs sm:text-sm font-bold text-brand-orange hover:text-[#e04c14] flex items-center gap-1"
+                to="/#catalogue"
+                className="text-xs sm:text-sm font-bold text-brand-green hover:underline flex items-center gap-1"
               >
-                <span>View All</span>
+                <span>View All {products.length} Items</span>
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
@@ -370,7 +584,10 @@ export const ProductDetailPage: React.FC = () => {
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
 };
+
+export default ProductDetailPage;
