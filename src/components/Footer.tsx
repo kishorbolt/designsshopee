@@ -8,8 +8,8 @@ import { generateGeneralWhatsAppUrl, openWhatsApp } from '../utils/whatsapp';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-brand-green text-[#FFFDF5] pt-14 sm:pt-16 pb-12 border-t-2 border-[#C6A15B]/40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-brand-green text-[#FFFDF5] pt-14 sm:pt-16 border-t-2 border-[#C6A15B]/40">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 sm:pb-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-8 pb-12 border-b border-white/15">
           
           {/* Brand Info & Social Links */}
@@ -191,6 +191,64 @@ export const Footer: React.FC = () => {
           <div className="flex items-center gap-2 text-brand-cream/70">
             <span>Vellore's Favorite Toy, Gift & Novelty Destination</span>
           </div>
+        </div>
+      </div>
+
+      {/* Separate Developer Attribution Strip (Matching Forest Green #075B43) */}
+      <div className="w-full bg-[#075B43] py-3.5 sm:py-4 px-4 border-t border-white/10 text-center">
+        <div className="max-w-md mx-auto flex flex-col items-center justify-center space-y-1">
+          {/* Line 1: Designed & Developed by */}
+          <p className="text-[11px] sm:text-xs text-[#8EABC0] tracking-wide font-normal">
+            Designed &amp; Developed by
+          </p>
+
+          {/* Line 2: Circular PIYROWARE Logo + Bold White PIYROWARE */}
+          <div className="flex items-center justify-center gap-2 py-0.5">
+            <div
+              className="w-[28px] h-[28px] rounded-full overflow-hidden bg-white flex items-center justify-center shrink-0 shadow-xs"
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                aspectRatio: '1 / 1',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#ffffff'
+              }}
+            >
+              <img
+                src="/piyrowarelogo.jpeg"
+                alt="PIYROWARE"
+                width={28}
+                height={28}
+                className="w-full h-full object-contain p-0.5"
+                style={{ objectFit: 'contain' }}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('/products/piyrowarelogo.jpeg')) {
+                    target.src = '/products/piyrowarelogo.jpeg';
+                  }
+                }}
+              />
+            </div>
+            <span className="text-white font-bold text-sm sm:text-base tracking-wider">
+              PIYROWARE
+            </span>
+          </div>
+
+          {/* Line 3: Contact Developer Team: 9488793023 */}
+          <p className="text-[11px] sm:text-xs text-[#8EABC0]">
+            Contact Developer Team:{' '}
+            <a
+              href="tel:9488793023"
+              className="text-[#00D9F5] underline hover:text-[#5ce9fc] transition-colors font-semibold"
+              title="Call Developer Team: 9488793023"
+            >
+              9488793023
+            </a>
+          </p>
         </div>
       </div>
     </footer>
