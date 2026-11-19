@@ -9,11 +9,11 @@ export function getBaseSiteUrl(): string {
   if (typeof window !== 'undefined' && window.location) {
     const host = window.location.hostname;
     if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.local')) {
-      return 'https://designsshopee.in';
+      return 'https://www.designsshopee.in';
     }
     return window.location.origin;
   }
-  return 'https://designsshopee.in';
+  return 'https://www.designsshopee.in';
 }
 
 /**
@@ -131,7 +131,7 @@ DESIGNS SHOPEE`;
 export function generateGeneralWhatsAppUrl(contextMessage?: string): string {
   const text = contextMessage || `Hello DESIGNS SHOPEE!
 
-I visited your website (https://designsshopee.in) and would like to enquire about your products and showroom in Vellore.
+I visited your website (https://www.designsshopee.in) and would like to enquire about your products and showroom in Vellore.
 
 Please share more details.`;
 

@@ -15,7 +15,7 @@ if (!fs.existsSync(distIndexHtml)) {
 
 const baseHtml = fs.readFileSync(distIndexHtml, 'utf-8');
 const products = JSON.parse(fs.readFileSync(productsJsonPath, 'utf-8'));
-const BASE_URL = 'https://designsshopee.in';
+const BASE_URL = 'https://www.designsshopee.in';
 
 console.log('⚡ Pre-rendering initial HTML metadata & structured data for SEO...');
 

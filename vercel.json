@@ -8,7 +8,7 @@
           "value": "designsshopee.vercel.app"
         }
       ],
-      "destination": "https://designsshopee.in/$1",
+      "destination": "https://www.designsshopee.in/$1",
       "permanent": true
     }
   ],

@@ -121,9 +121,9 @@ products.forEach((p, index) => {
   // Test WhatsApp message generation
   let sampleMessage;
   if (p.slug === 'pop-up-kids-play-tent' || p.name === 'Pop-Up Kids Play Tent') {
-    sampleMessage = `Hello DESIGNS SHOPEE!\n\nI am interested in the Pop-Up Kids Play Tent.\n\nPlease share the price and product details.\n\nProduct Link: https://designsshopee.in/product/${p.slug}`;
+    sampleMessage = `Hello DESIGNS SHOPEE!\n\nI am interested in the Pop-Up Kids Play Tent.\n\nPlease share the price and product details.\n\nProduct Link: https://www.designsshopee.in/product/${p.slug}`;
   } else {
-    sampleMessage = `Hello DESIGNS SHOPEE!\n\nI am interested in this product.\n\nProduct Name: ${p.name}\nProduct Link: https://designsshopee.in/product/${p.slug}\n\nPlease share more details.`;
+    sampleMessage = `Hello DESIGNS SHOPEE!\n\nI am interested in this product.\n\nProduct Name: ${p.name}\nProduct Link: https://www.designsshopee.in/product/${p.slug}\n\nPlease share more details.`;
   }
   const encoded = encodeURIComponent(sampleMessage);
   const waUrl = `https://wa.me/919487703591?text=${encoded}`;
@@ -156,14 +156,14 @@ if (!fs.existsSync(sitemapPath)) {
   errors++;
 } else {
   const content = fs.readFileSync(sitemapPath, 'utf-8');
-  if (!content.includes('https://designsshopee.in') || !content.includes('</urlset>') || !content.includes('<image:loc>')) {
+  if (!content.includes('https://www.designsshopee.in') || !content.includes('</urlset>') || !content.includes('<image:loc>')) {
     console.error('❌ Malformed sitemap.xml or missing image tags');
     errors++;
-  } else if (content.includes('https://www.designsshopee.in') || content.includes('http://designsshopee.in')) {
-    console.error('❌ sitemap.xml contains non-canonical www or http URLs');
+  } else if (content.includes('https://designsshopee.in/') || content.includes('http://designsshopee.in')) {
+    console.error('❌ sitemap.xml contains non-canonical apex or http URLs');
     errors++;
   } else {
-    console.log('✅ sitemap.xml verified with valid Google Image XML format & canonical domain https://designsshopee.in');
+    console.log('✅ sitemap.xml verified with valid Google Image XML format & canonical domain https://www.designsshopee.in');
   }
 }
 
@@ -187,8 +187,8 @@ if (!fs.existsSync(robotsPath)) {
   errors++;
 } else {
   const rContent = fs.readFileSync(robotsPath, 'utf-8');
-  if (!rContent.includes('Sitemap: https://designsshopee.in/sitemap.xml')) {
-    console.error('❌ robots.txt does not point to exact canonical https://designsshopee.in/sitemap.xml');
+  if (!rContent.includes('Sitemap: https://www.designsshopee.in/sitemap.xml')) {
+    console.error('❌ robots.txt does not point to exact canonical https://www.designsshopee.in/sitemap.xml');
     errors++;
   } else {
     console.log('✅ robots.txt verified with correct canonical sitemap reference.');
@@ -206,8 +206,8 @@ if (!fs.existsSync(distIndex)) {
     console.error('❌ dist/index.html missing correct page title');
     errors++;
   }
-  if (!indexContent.includes('https://designsshopee.in/')) {
-    console.error('❌ dist/index.html missing canonical https://designsshopee.in/');
+  if (!indexContent.includes('https://www.designsshopee.in/')) {
+    console.error('❌ dist/index.html missing canonical https://www.designsshopee.in/');
     errors++;
   }
   if (!indexContent.includes('"@type": ["Store", "ToyStore"]') && !indexContent.includes('"@type":["Store","ToyStore"]')) {
@@ -225,7 +225,7 @@ for (const p of products) {
     errors++;
   } else {
     const pContent = fs.readFileSync(pPath, 'utf-8');
-    if (!pContent.includes(`https://designsshopee.in/product/${p.slug}`)) {
+    if (!pContent.includes(`https://www.designsshopee.in/product/${p.slug}`)) {
       console.error(`❌ Missing canonical or offer URL in dist/product/${p.slug}/index.html`);
       errors++;
     }

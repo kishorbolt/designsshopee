@@ -2,141 +2,141 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://designsshopee.in/</loc>
+    <loc>https://www.designsshopee.in/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://designsshopee.in/assets/logo.png</image:loc>
+      <image:loc>https://www.designsshopee.in/assets/logo.png</image:loc>
       <image:title>DESIGNS SHOPEE — Premier Toy &amp; Gift Showroom in Vellore</image:title>
       <image:caption>DESIGNS SHOPEE showroom at 9, Katpadi Rd, beside Pachaiyappas Silks, Thottapalayam, Vellore</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://designsshopee.in/about</loc>
+    <loc>https://www.designsshopee.in/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://designsshopee.in/cart</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://designsshopee.in/checkout</loc>
+    <loc>https://www.designsshopee.in/cart</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://designsshopee.in/product/ai-printer</loc>
+    <loc>https://www.designsshopee.in/checkout</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.designsshopee.in/product/ai-printer</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://designsshopee.in/products/AI%20PRINTER_3500rs_2800rs%20-%201.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/AI%20PRINTER_3500rs_2800rs%20-%201.png</image:loc>
       <image:title>AI Printer</image:title>
       <image:caption>Compact wireless AI printer for smart instant photo, sticker, and note printing. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/AI%20PRINTER_3500rs_2800rs%20-%202.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/AI%20PRINTER_3500rs_2800rs%20-%202.png</image:loc>
       <image:title>AI Printer</image:title>
       <image:caption>Compact wireless AI printer for smart instant photo, sticker, and note printing. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://designsshopee.in/product/animal-bottle</loc>
+    <loc>https://www.designsshopee.in/product/animal-bottle</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-1.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-1.png</image:loc>
       <image:title>Animal Bottle</image:title>
       <image:caption>Kids insulated animal-themed water bottle with flip cap and carry strap. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-2.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-2.png</image:loc>
       <image:title>Animal Bottle</image:title>
       <image:caption>Kids insulated animal-themed water bottle with flip cap and carry strap. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-3.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-3.png</image:loc>
       <image:title>Animal Bottle</image:title>
       <image:caption>Kids insulated animal-themed water bottle with flip cap and carry strap. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-4.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-4.png</image:loc>
       <image:title>Animal Bottle</image:title>
       <image:caption>Kids insulated animal-themed water bottle with flip cap and carry strap. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-5.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-5.png</image:loc>
       <image:title>Animal Bottle</image:title>
       <image:caption>Kids insulated animal-themed water bottle with flip cap and carry strap. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-6.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/ANIMAL%20BOTTLE%20_%20499rs_399rs-6.png</image:loc>
       <image:title>Animal Bottle</image:title>
       <image:caption>Kids insulated animal-themed water bottle with flip cap and carry strap. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://designsshopee.in/product/santosh-subramaniam-horse</loc>
+    <loc>https://www.designsshopee.in/product/santosh-subramaniam-horse</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://designsshopee.in/products/Santosh%20Subramaniam%20Horse_899rs_750rs%20-%201.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/Santosh%20Subramaniam%20Horse_899rs_750rs%20-%201.png</image:loc>
       <image:title>Santosh Subramaniam Horse</image:title>
       <image:caption>Santosh Subramaniam rocking horse novelty figurine with musical chime. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/Santosh%20Subramaniam%20Horse_899rs_750rs%20-%202.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/Santosh%20Subramaniam%20Horse_899rs_750rs%20-%202.png</image:loc>
       <image:title>Santosh Subramaniam Horse</image:title>
       <image:caption>Santosh Subramaniam rocking horse novelty figurine with musical chime. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/Santosh%20Subramaniam%20Horse_899rs_750rs%20-%203.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/Santosh%20Subramaniam%20Horse_899rs_750rs%20-%203.png</image:loc>
       <image:title>Santosh Subramaniam Horse</image:title>
       <image:caption>Santosh Subramaniam rocking horse novelty figurine with musical chime. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://designsshopee.in/product/starry-sky-lamp</loc>
+    <loc>https://www.designsshopee.in/product/starry-sky-lamp</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-2.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-2.png</image:loc>
       <image:title>Starry Sky Lamp</image:title>
       <image:caption>Starry sky cosmic galaxy night lamp projector with 360-degree ambient lighting. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-3.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-3.png</image:loc>
       <image:title>Starry Sky Lamp</image:title>
       <image:caption>Starry sky cosmic galaxy night lamp projector with 360-degree ambient lighting. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-4.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-4.png</image:loc>
       <image:title>Starry Sky Lamp</image:title>
       <image:caption>Starry sky cosmic galaxy night lamp projector with 360-degree ambient lighting. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-5.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/Starry%20sky%20lamp_2000rs_1500rs%20-5.png</image:loc>
       <image:title>Starry Sky Lamp</image:title>
       <image:caption>Starry sky cosmic galaxy night lamp projector with 360-degree ambient lighting. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
   </url>
   <url>
-    <loc>https://designsshopee.in/product/steering-keychain</loc>
+    <loc>https://www.designsshopee.in/product/steering-keychain</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <image:image>
-      <image:loc>https://designsshopee.in/products/stearing%20key%20chain%20_350rs_250rs%20-%201.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/stearing%20key%20chain%20_350rs_250rs%20-%201.png</image:loc>
       <image:title>Steering Keychain</image:title>
       <image:caption>Miniature steering wheel metallic keychain with rotating center. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/stearing%20key%20chain%20_350rs_250rs%20-%202.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/stearing%20key%20chain%20_350rs_250rs%20-%202.png</image:loc>
       <image:title>Steering Keychain</image:title>
       <image:caption>Miniature steering wheel metallic keychain with rotating center. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://designsshopee.in/products/stearing%20key%20chain%20_350rs_250rs%20-%203.png</image:loc>
+      <image:loc>https://www.designsshopee.in/products/stearing%20key%20chain%20_350rs_250rs%20-%203.png</image:loc>
       <image:title>Steering Keychain</image:title>
       <image:caption>Miniature steering wheel metallic keychain with rotating center. Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore.</image:caption>
     </image:image>

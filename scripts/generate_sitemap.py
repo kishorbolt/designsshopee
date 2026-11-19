@@ -5,7 +5,7 @@ from xml.sax.saxutils import escape
 with open('src/data/products.json', 'r', encoding='utf-8') as f:
     products = json.load(f)
 
-base_url = 'https://designsshopee.in'
+base_url = 'https://www.designsshopee.in'
 
 lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',

@@ -1,9 +1,9 @@
 /**
- * SEO & Meta Tags Utility for DESIGNS SHOPEE (https://designsshopee.in/)
+ * SEO & Meta Tags Utility for DESIGNS SHOPEE (https://www.designsshopee.in/)
  * Ensures dynamic updates for title, description, canonical link, Open Graph and Twitter cards.
  */
 
-export const BASE_CANONICAL_DOMAIN = 'https://designsshopee.in';
+export const BASE_CANONICAL_DOMAIN = 'https://www.designsshopee.in';
 
 export interface SEOProps {
   title?: string;

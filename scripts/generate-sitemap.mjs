@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const productsJsonPath = path.join(root, 'src', 'data', 'products.json');
 const products = JSON.parse(fs.readFileSync(productsJsonPath, 'utf-8'));
 
-const BASE_URL = 'https://designsshopee.in';
+const BASE_URL = 'https://www.designsshopee.in';
 
 const escapeXml = (unsafe) => {
   if (!unsafe) return '';
