@@ -5,17 +5,6 @@
       "has": [
         {
           "type": "host",
-          "value": "www.designsshopee.in"
-        }
-      ],
-      "destination": "https://designsshopee.in/$1",
-      "permanent": true
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
           "value": "designsshopee.vercel.app"
         }
       ],
