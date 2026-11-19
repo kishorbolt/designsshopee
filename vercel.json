@@ -20,6 +20,19 @@
   ],
   "headers": [
     {
+      "source": "/(google[a-zA-Z0-9_-]+\\.html)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    },
+    {
       "source": "/(.*)\\.html",
       "headers": [
         {

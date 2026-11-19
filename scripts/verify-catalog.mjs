@@ -216,6 +216,27 @@ for (const p of products) {
 }
 console.log(`✅ All ${products.length} product detail pages pre-rendered with initial HTML Product Schema.org JSON-LD.`);
 
+// 8. Verify Google Search Console Verification File
+const publicFiles = fs.readdirSync(path.join(root, 'public'));
+const googleVerifyFiles = publicFiles.filter(f => f.startsWith('google') && f.endsWith('.html'));
+if (googleVerifyFiles.length > 0) {
+  for (const gFile of googleVerifyFiles) {
+    const distGFile = path.join(root, 'dist', gFile);
+    if (!fs.existsSync(distGFile)) {
+      console.error(`❌ Missing Google verification file in dist root: dist/${gFile}`);
+      errors++;
+    } else {
+      const gContent = fs.readFileSync(distGFile, 'utf-8').trim();
+      if (!gContent.startsWith('google-site-verification:')) {
+        console.error(`❌ Google verification file dist/${gFile} has invalid content: ${gContent}`);
+        errors++;
+      } else {
+        console.log(`✅ Google Search Console verification file verified in dist root: ${gFile} (${gContent})`);
+      }
+    }
+  }
+}
+
 console.log('\n----------------------------------------');
 if (errors === 0) {
   console.log('🎉 ALL QUALITY ASSURANCE CHECKS PASSED PERFECTLY! (0 errors, 0 warnings)');
