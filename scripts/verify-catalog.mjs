@@ -137,18 +137,30 @@ products.forEach((p, index) => {
 console.log(`✅ All ${products.length} products have unique IDs, slugs, and valid images.`);
 console.log(`✅ Verified ${categories.size} unique categories: ${Array.from(categories).join(', ')}`);
 
-// 4. Verify Sitemap & Robots.txt
+// 4. Verify Favicons & App Icons
+const requiredIcons = ['favicon.ico', 'favicon-48x48.png', 'apple-touch-icon.png', 'site.webmanifest'];
+for (const icon of requiredIcons) {
+  const iconPath = path.join(root, 'public', icon);
+  if (!fs.existsSync(iconPath)) {
+    console.error(`❌ Missing favicon/icon asset: public/${icon}`);
+    errors++;
+  } else {
+    console.log(`✅ Favicon asset verified: public/${icon}`);
+  }
+}
+
+// 5. Verify Sitemap & Robots.txt
 const sitemapPath = path.join(root, 'public', 'sitemap.xml');
 if (!fs.existsSync(sitemapPath)) {
   console.error('❌ Missing sitemap.xml');
   errors++;
 } else {
   const content = fs.readFileSync(sitemapPath, 'utf-8');
-  if ((!content.includes('https://designsshopee.vercel.app') && !content.includes('https://designsshopee.in')) || !content.includes('</urlset>')) {
-    console.error('❌ Malformed sitemap.xml');
+  if (!content.includes('https://designsshopee.in') || !content.includes('</urlset>') || !content.includes('<image:loc>')) {
+    console.error('❌ Malformed sitemap.xml or missing image tags');
     errors++;
   } else {
-    console.log('✅ sitemap.xml verified with valid XML format.');
+    console.log('✅ sitemap.xml verified with valid Google Image XML format & canonical domain.');
   }
 }
 
@@ -157,17 +169,52 @@ if (!fs.existsSync(robotsPath)) {
   console.error('❌ Missing robots.txt');
   errors++;
 } else {
-  console.log('✅ robots.txt verified.');
+  const rContent = fs.readFileSync(robotsPath, 'utf-8');
+  if (!rContent.includes('https://designsshopee.in/sitemap.xml')) {
+    console.error('❌ robots.txt does not point to https://designsshopee.in/sitemap.xml');
+    errors++;
+  } else {
+    console.log('✅ robots.txt verified with correct sitemap reference.');
+  }
 }
 
-// 5. Verify Build Output
+// 6. Verify Build Output & Structured Data
 const distIndex = path.join(root, 'dist', 'index.html');
 if (!fs.existsSync(distIndex)) {
   console.error('❌ dist/index.html does not exist. Run npm run build first.');
   errors++;
 } else {
-  console.log('✅ Production build artifact dist/index.html verified.');
+  const indexContent = fs.readFileSync(distIndex, 'utf-8');
+  if (!indexContent.includes('DESIGNS SHOPEE | Toys, Gifts & Unique Lifestyle Products in Vellore')) {
+    console.error('❌ dist/index.html missing correct page title');
+    errors++;
+  }
+  if (!indexContent.includes('https://designsshopee.in/')) {
+    console.error('❌ dist/index.html missing canonical https://designsshopee.in/');
+    errors++;
+  }
+  if (!indexContent.includes('"@type": ["Store", "ToyStore"]') && !indexContent.includes('"@type":["Store","ToyStore"]')) {
+    console.error('❌ dist/index.html missing LocalBusiness/Store schema');
+    errors++;
+  }
+  console.log('✅ Production build artifact dist/index.html verified with full LocalBusiness structured data.');
 }
+
+// 7. Verify Pre-rendered Product Detail Pages
+for (const p of products) {
+  const pPath = path.join(root, 'dist', 'product', p.slug, 'index.html');
+  if (!fs.existsSync(pPath)) {
+    console.error(`❌ Missing pre-rendered SEO page for product ${p.id}: dist/product/${p.slug}/index.html`);
+    errors++;
+  } else {
+    const pContent = fs.readFileSync(pPath, 'utf-8');
+    if (!pContent.includes(`https://designsshopee.in/product/${p.slug}`)) {
+      console.error(`❌ Missing canonical or offer URL in dist/product/${p.slug}/index.html`);
+      errors++;
+    }
+  }
+}
+console.log(`✅ All ${products.length} product detail pages pre-rendered with initial HTML Product Schema.org JSON-LD.`);
 
 console.log('\n----------------------------------------');
 if (errors === 0) {

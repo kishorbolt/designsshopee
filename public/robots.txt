@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://designsshopee.vercel.app/sitemap.xml
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /products/
+Allow: /assets/
+Allow: /favicon*
+Allow: /apple-touch-icon.png
+
+Sitemap: https://designsshopee.in/sitemap.xml

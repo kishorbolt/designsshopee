@@ -26,6 +26,7 @@ import { OptimizedImage } from '../components/OptimizedImage';
 import { Product } from '../types';
 import { STORE_DETAILS } from '../utils/constants';
 import { useCart } from '../context/CartContext';
+import { updateMetaTags, BASE_CANONICAL_DOMAIN } from '../utils/seo';
 import { 
   generateProductWhatsAppUrl, 
   getProductShareUrl, 
@@ -66,9 +67,21 @@ export const ProductDetailPage: React.FC = () => {
     setQuantity(1);
 
     if (product) {
-      document.title = `${product.name} | DESIGNS SHOPEE Vellore`;
+      // Dynamic Search & Social Meta Tags
+      const pageTitle = `${product.name} | Toys & Gifts in Vellore | DESIGNS SHOPEE`;
+      const pageDesc = `${product.description} Available in-store at DESIGNS SHOPEE, Katpadi Road, Vellore with direct WhatsApp order assistance.`;
+      const canonical = `${BASE_CANONICAL_DOMAIN}/product/${product.slug}`;
+      const primaryImgUrl = `${BASE_CANONICAL_DOMAIN}${encodeURI(product.image)}`;
+
+      updateMetaTags({
+        title: pageTitle,
+        description: pageDesc,
+        canonicalUrl: canonical,
+        ogImage: primaryImgUrl,
+        ogType: 'product'
+      });
       
-      // Inject Schema.org Product JSON-LD for Local & Product SEO
+      // Inject Schema.org Product JSON-LD for Google Rich Results
       const schemaScriptId = 'product-json-ld';
       let scriptTag = document.getElementById(schemaScriptId) as HTMLScriptElement | null;
       if (!scriptTag) {
@@ -82,23 +95,27 @@ export const ProductDetailPage: React.FC = () => {
         '@context': 'https://schema.org',
         '@type': 'Product',
         'name': product.name,
-        'image': galleryImages.map(img => `https://designsshopee.vercel.app${img}`),
+        'image': galleryImages.map(img => `${BASE_CANONICAL_DOMAIN}${encodeURI(img)}`),
         'description': product.description,
-        'sku': product.id,
+        'sku': product.code || product.id,
+        'mpn': product.id,
+        'category': product.category,
         'brand': {
           '@type': 'Brand',
           'name': 'DESIGNS SHOPEE'
         },
         'offers': {
           '@type': 'Offer',
-          'url': `https://designsshopee.vercel.app/product/${product.slug}`,
+          'url': canonical,
           'priceCurrency': 'INR',
           'price': product.price || 0,
+          'priceValidUntil': '2027-12-31',
           'itemCondition': 'https://schema.org/NewCondition',
           'availability': 'https://schema.org/InStock',
           'seller': {
             '@type': 'Store',
             'name': 'DESIGNS SHOPEE',
+            'url': `${BASE_CANONICAL_DOMAIN}/`,
             'telephone': '+919487703591',
             'address': {
               '@type': 'PostalAddress',
@@ -114,6 +131,7 @@ export const ProductDetailPage: React.FC = () => {
 
       if (isTent || product.price === null) {
         delete productLd.offers.price;
+        delete productLd.offers.priceValidUntil;
         productLd.offers.availability = 'https://schema.org/PreOrder';
       }
 
@@ -123,6 +141,15 @@ export const ProductDetailPage: React.FC = () => {
     return () => {
       const scriptTag = document.getElementById('product-json-ld');
       if (scriptTag) scriptTag.remove();
+
+      // Reset to default Homepage SEO on navigation away
+      updateMetaTags({
+        title: 'DESIGNS SHOPEE | Toys, Gifts & Unique Lifestyle Products in Vellore',
+        description: 'Discover toys, kids essentials, unique birthday return gifts, clocks and lifestyle novelties at DESIGNS SHOPEE, 9 Katpadi Road showroom beside Pachaiyappas Silks, Thottapalayam, Vellore. Browse our online catalogue with instant WhatsApp assistance.',
+        canonicalUrl: `${BASE_CANONICAL_DOMAIN}/`,
+        ogImage: `${BASE_CANONICAL_DOMAIN}/assets/logo.png`,
+        ogType: 'website'
+      });
     };
   }, [slug, product]);
 

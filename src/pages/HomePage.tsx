@@ -24,6 +24,7 @@ import { FacebookIcon, InstagramIcon } from '../components/SocialIcons';
 import { Product } from '../types';
 import { STORE_DETAILS, STORE_CONFIG } from '../utils/constants';
 import { generateGeneralWhatsAppUrl, openWhatsApp } from '../utils/whatsapp';
+import { updateMetaTags, BASE_CANONICAL_DOMAIN } from '../utils/seo';
 
 export const HomePage: React.FC = () => {
   const products = productsData as Product[];
@@ -35,13 +36,25 @@ export const HomePage: React.FC = () => {
   const [sortBy, setSortBy] = useState<string>(searchParams.get('sort') || 'featured');
   const [itemsToShow, setItemsToShow] = useState<number>(30);
 
-  // Sync state with URL search params
+  // Sync state with URL search params and maintain Homepage SEO
   useEffect(() => {
     const searchFromUrl = searchParams.get('search');
     const sortFromUrl = searchParams.get('sort');
 
     if (searchFromUrl !== null) setSearchTerm(searchFromUrl);
     if (sortFromUrl !== null) setSortBy(sortFromUrl);
+
+    if (searchFromUrl && searchFromUrl.trim()) {
+      document.title = `Search: "${searchFromUrl.trim()}" | DESIGNS SHOPEE Vellore`;
+    } else {
+      updateMetaTags({
+        title: 'DESIGNS SHOPEE | Toys, Gifts & Unique Lifestyle Products in Vellore',
+        description: 'Discover toys, kids essentials, unique birthday return gifts, clocks and lifestyle novelties at DESIGNS SHOPEE, 9 Katpadi Road showroom beside Pachaiyappas Silks, Thottapalayam, Vellore. Browse our online catalogue with instant WhatsApp assistance.',
+        canonicalUrl: `${BASE_CANONICAL_DOMAIN}/`,
+        ogImage: `${BASE_CANONICAL_DOMAIN}/assets/logo.png`,
+        ogType: 'website'
+      });
+    }
   }, [searchParams]);
 
   // Update URL params when user searches or sorts

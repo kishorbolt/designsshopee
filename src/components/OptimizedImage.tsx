@@ -35,6 +35,13 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [hasError, setHasError] = useState(false);
   const [triedFallback, setTriedFallback] = useState(false);
 
+  React.useEffect(() => {
+    setCurrentSrc(src);
+    setIsLoaded(false);
+    setHasError(false);
+    setTriedFallback(false);
+  }, [src]);
+
   // If primary src fails (e.g. WebP), try fallbackSrc (e.g. original JPEG)
   const handleError = () => {
     if (fallbackSrc && !triedFallback && currentSrc !== fallbackSrc) {
