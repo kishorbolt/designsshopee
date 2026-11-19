@@ -243,6 +243,7 @@ export const HomePage: React.FC = () => {
                         className="w-full h-full"
                         fit="contain"
                         imageClassName="hover:scale-105 transition-transform duration-500"
+                        priority={true}
                       />
                       <span className="absolute bottom-1.5 left-1.5 bg-brand-green text-white text-[10px] font-bold px-1.5 py-0.5 rounded-lg shadow-xs">
                         ₹{collageItems[1].price}
@@ -258,6 +259,7 @@ export const HomePage: React.FC = () => {
                         className="w-full h-full"
                         fit="contain"
                         imageClassName="hover:scale-105 transition-transform duration-500"
+                        priority={true}
                       />
                       <span className="absolute bottom-1.5 left-1.5 bg-brand-green text-white text-[10px] font-bold px-1.5 py-0.5 rounded-lg shadow-xs">
                         ₹{collageItems[2].price}

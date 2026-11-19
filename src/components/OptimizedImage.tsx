@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Sparkles } from 'lucide-react';
 
 interface OptimizedImageProps {
@@ -9,12 +9,24 @@ interface OptimizedImageProps {
   imageClassName?: string;
   aspectRatio?: number;
   priority?: boolean;
-  sizes?: string;
   fallbackText?: string;
   fit?: 'contain' | 'cover';
   width?: number | string;
   height?: number | string;
 }
+
+/**
+ * Safely encode image URLs handling spaces and special characters
+ * without double-encoding existing %20 sequences.
+ */
+export const safeEncodeUrl = (url: string): string => {
+  if (!url) return '';
+  try {
+    return encodeURI(decodeURI(url));
+  } catch {
+    return encodeURI(url);
+  }
+};
 
 export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   src,
@@ -24,7 +36,6 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   imageClassName = '',
   aspectRatio,
   priority = false,
-  sizes = '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw',
   fallbackText = 'DESIGNS SHOPEE',
   fit = 'contain',
   width,
@@ -34,63 +45,92 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [triedFallback, setTriedFallback] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
 
-  React.useEffect(() => {
+  // Synchronize state when src prop changes
+  useEffect(() => {
     setCurrentSrc(src);
-    setIsLoaded(false);
-    setHasError(false);
     setTriedFallback(false);
+    setHasError(false);
+
+    // Immediate check if this image is already cached & complete in browser memory
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      setIsLoaded(true);
+    } else {
+      setIsLoaded(false);
+    }
   }, [src]);
 
-  // If primary src fails (e.g. WebP), try fallbackSrc (e.g. original JPEG)
+  // Synchronous callback ref to catch instant cache-hits on mount before onLoad fires
+  const setImgRef = useCallback((node: HTMLImageElement | null) => {
+    imgRef.current = node;
+    if (node && node.complete && node.naturalWidth > 0) {
+      setIsLoaded(true);
+    }
+  }, []);
+
+  const handleLoad = () => {
+    setIsLoaded(true);
+    setHasError(false);
+  };
+
   const handleError = () => {
     if (fallbackSrc && !triedFallback && currentSrc !== fallbackSrc) {
       setTriedFallback(true);
       setCurrentSrc(fallbackSrc);
+      setIsLoaded(false);
     } else {
       setHasError(true);
+      setIsLoaded(true); // stop skeleton
     }
   };
+
+  const encodedSrc = safeEncodeUrl(currentSrc);
 
   return (
     <div 
       className={`relative overflow-hidden flex items-center justify-center ${className}`}
       style={aspectRatio ? { aspectRatio: `${aspectRatio}` } : undefined}
     >
-      {/* Skeleton Shimmer Placeholder */}
+      {/* Skeleton Shimmer: visible while loading; unmounts immediately once loaded */}
       {!isLoaded && !hasError && (
-        <div className="absolute inset-0 skeleton-shimmer z-0 pointer-events-none" />
+        <div 
+          className="absolute inset-0 skeleton-shimmer z-0 pointer-events-none transition-opacity duration-300" 
+          aria-hidden="true"
+        />
       )}
 
-      {/* Graceful Branded Fallback if image fails (never a broken-image icon) */}
+      {/* Graceful Branded Fallback if genuine image failure */}
       {hasError ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center bg-gray-50 border border-gray-150 rounded-2xl z-10 select-none">
-          <div className="w-10 h-10 rounded-xl bg-orange-100/60 text-brand-orange flex items-center justify-center mb-1.5">
-            <Sparkles className="w-5 h-5 text-brand-orange" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center bg-[#F5EEDC]/40 border border-[#E8DEC8] rounded-2xl z-10 select-none">
+          <div className="w-10 h-10 rounded-xl bg-[#F5EEDC] text-brand-green flex items-center justify-center mb-1.5 border border-[#E8DEC8]">
+            <Sparkles className="w-5 h-5 text-[#C6A15B]" />
           </div>
-          <span className="text-[11px] font-bold text-brand-dark line-clamp-1">{fallbackText}</span>
-          <span className="text-[10px] text-gray-400">Showroom Item</span>
+          <span className="text-[11px] font-bold text-[#262626] line-clamp-1">{fallbackText}</span>
+          <span className="text-[10px] text-[#262626]/60">DESIGNS SHOPEE</span>
         </div>
       ) : (
         <img
-          src={currentSrc}
+          ref={setImgRef}
+          src={encodedSrc}
           alt={alt}
           width={width}
           height={height}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
           fetchPriority={priority ? 'high' : 'auto'}
-          sizes={sizes}
-          onLoad={() => setIsLoaded(true)}
+          onLoad={handleLoad}
           onError={handleError}
-          className={`w-full h-full ${
+          className={`w-full h-full relative z-10 ${
             fit === 'contain' ? 'object-contain' : 'object-cover'
-          } transition-all duration-300 ${imageClassName} ${
-            isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-98'
+          } transition-all duration-200 ${imageClassName} ${
+            isLoaded ? 'opacity-100 scale-100' : 'opacity-95 scale-[0.99]'
           }`}
-          style={{ maxWidth: '94%', maxHeight: '94%' }}
+          style={{ maxWidth: '100%', maxHeight: '100%' }}
         />
       )}
     </div>
   );
 };
+
+export default OptimizedImage;

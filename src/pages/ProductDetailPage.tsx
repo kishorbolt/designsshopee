@@ -366,6 +366,7 @@ export const ProductDetailPage: React.FC = () => {
                         alt={`${product.name} angle ${idx + 1}`}
                         className="w-full h-full"
                         fit="contain"
+                        priority={true}
                       />
                       {isActive && (
                         <span className="absolute bottom-0 inset-x-0 h-1 bg-brand-green" />
