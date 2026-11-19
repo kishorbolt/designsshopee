@@ -16,7 +16,6 @@ import {
   Zap,
   Plus,
   Minus,
-  Layers,
   Truck,
   RotateCcw
 } from 'lucide-react';
@@ -320,23 +319,11 @@ export const ProductDetailPage: React.FC = () => {
                 </button>
               )}
 
-              {/* Image Count Indicator (e.g. 1/3) */}
-              {galleryImages.length > 1 ? (
-                <div className="absolute top-4 right-4 bg-[#262626]/80 backdrop-blur-xs text-white px-3 py-1 rounded-full text-xs font-bold shadow-xs flex items-center gap-1.5 pointer-events-none">
-                  <Layers className="w-3.5 h-3.5 text-[#C6A15B]" />
-                  <span>{activeImageIndex + 1} / {galleryImages.length}</span>
-                </div>
-              ) : (
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-xs text-[#262626] px-3 py-1 rounded-full text-[11px] font-semibold border border-[#E8DEC8] shadow-xs pointer-events-none">
-                  100% Genuine Photo
-                </div>
-              )}
-
               {/* Swipe hint for mobile users */}
               {galleryImages.length > 1 && (
                 <div className="absolute bottom-3 inset-x-0 text-center sm:hidden pointer-events-none">
                   <span className="text-[10px] font-semibold text-[#262626]/60 bg-white/80 px-2.5 py-0.5 rounded-full border border-[#E8DEC8]">
-                    Swipe or tap thumbnails to view {galleryImages.length} angles
+                    Swipe or tap thumbnails to view other angles
                   </span>
                 </div>
               )}
