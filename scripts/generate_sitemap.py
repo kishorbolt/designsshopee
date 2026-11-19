@@ -25,16 +25,6 @@ lines = [
     f'    <loc>{base_url}/about</loc>',
     '    <changefreq>monthly</changefreq>',
     '    <priority>0.8</priority>',
-    '  </url>',
-    '  <url>',
-    f'    <loc>{base_url}/cart</loc>',
-    '    <changefreq>monthly</changefreq>',
-    '    <priority>0.6</priority>',
-    '  </url>',
-    '  <url>',
-    f'    <loc>{base_url}/checkout</loc>',
-    '    <changefreq>monthly</changefreq>',
-    '    <priority>0.6</priority>',
     '  </url>'
 ]
 

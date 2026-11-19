@@ -162,8 +162,11 @@ if (!fs.existsSync(sitemapPath)) {
   } else if (content.includes('https://designsshopee.in/') || content.includes('http://designsshopee.in')) {
     console.error('❌ sitemap.xml contains non-canonical apex or http URLs');
     errors++;
+  } else if (content.includes('/cart</loc>') || content.includes('/checkout</loc>')) {
+    console.error('❌ sitemap.xml should not contain /cart or /checkout transactional URLs');
+    errors++;
   } else {
-    console.log('✅ sitemap.xml verified with valid Google Image XML format & canonical domain https://www.designsshopee.in');
+    console.log('✅ sitemap.xml verified with valid Google Image XML format & canonical domain https://www.designsshopee.in (clean of /cart and /checkout)');
   }
 }
 
@@ -176,7 +179,26 @@ if (!fs.existsSync(distSitemapPath)) {
   if (!distContent.startsWith('<?xml') || !distContent.includes('</urlset>')) {
     console.error('❌ dist/sitemap.xml is not valid XML');
     errors++;
+  } else if (distContent.includes('/cart</loc>') || distContent.includes('/checkout</loc>')) {
+    console.error('❌ dist/sitemap.xml contains /cart or /checkout');
+    errors++;
   } else {
+    // Verify each image URL in the sitemap exists on disk
+    const imgMatches = [...distContent.matchAll(/<image:loc>(.*?)<\/image:loc>/g)];
+    let missingImages = 0;
+    for (const match of imgMatches) {
+      const fullUrl = match[1];
+      const relPath = decodeURIComponent(fullUrl.replace('https://www.designsshopee.in', ''));
+      const diskPath = path.join(root, 'public', relPath.startsWith('/') ? relPath.slice(1) : relPath);
+      if (!fs.existsSync(diskPath)) {
+        console.error(`❌ Sitemap image does not exist on disk: ${relPath}`);
+        missingImages++;
+        errors++;
+      }
+    }
+    if (missingImages === 0) {
+      console.log(`✅ All ${imgMatches.length} product images in sitemap verified on disk.`);
+    }
     console.log('✅ dist/sitemap.xml verified in production build output');
   }
 }

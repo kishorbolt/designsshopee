@@ -38,16 +38,6 @@ const lines = [
   `    <loc>${BASE_URL}/about</loc>`,
   '    <changefreq>monthly</changefreq>',
   '    <priority>0.8</priority>',
-  '  </url>',
-  '  <url>',
-  `    <loc>${BASE_URL}/cart</loc>`,
-  '    <changefreq>monthly</changefreq>',
-  '    <priority>0.6</priority>',
-  '  </url>',
-  '  <url>',
-  `    <loc>${BASE_URL}/checkout</loc>`,
-  '    <changefreq>monthly</changefreq>',
-  '    <priority>0.6</priority>',
   '  </url>'
 ];
 
@@ -63,6 +53,11 @@ for (const p of products) {
 
   const images = (p.images && p.images.length > 0) ? p.images : [p.image];
   for (const imgPath of images) {
+    // Verify file exists on disk in public
+    const diskPath = path.join(root, 'public', imgPath.startsWith('/') ? imgPath.slice(1) : imgPath);
+    if (!fs.existsSync(diskPath)) {
+      console.error(`⚠️ Warning: Image in catalog does not exist on disk: ${diskPath}`);
+    }
     const encodedImg = encodeURI(imgPath);
     const fullImgUrl = `${BASE_URL}${encodedImg}`;
     lines.push('    <image:image>');
@@ -87,4 +82,4 @@ if (fs.existsSync(distPath)) {
   fs.writeFileSync(path.join(distPath, 'sitemap.xml'), xmlContent, 'utf-8');
 }
 
-console.log(`🗺️ Generated Google Image Sitemap with ${products.length + 4} canonical URLs: public/sitemap.xml`);
+console.log(`🗺️ Generated Google Image Sitemap with ${products.length + 2} canonical URLs (Homepage, About + ${products.length} Products): public/sitemap.xml`);
