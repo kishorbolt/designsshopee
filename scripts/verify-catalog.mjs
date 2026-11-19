@@ -152,15 +152,32 @@ for (const icon of requiredIcons) {
 // 5. Verify Sitemap & Robots.txt
 const sitemapPath = path.join(root, 'public', 'sitemap.xml');
 if (!fs.existsSync(sitemapPath)) {
-  console.error('❌ Missing sitemap.xml');
+  console.error('❌ Missing sitemap.xml in public/');
   errors++;
 } else {
   const content = fs.readFileSync(sitemapPath, 'utf-8');
   if (!content.includes('https://designsshopee.in') || !content.includes('</urlset>') || !content.includes('<image:loc>')) {
     console.error('❌ Malformed sitemap.xml or missing image tags');
     errors++;
+  } else if (content.includes('https://www.designsshopee.in') || content.includes('http://designsshopee.in')) {
+    console.error('❌ sitemap.xml contains non-canonical www or http URLs');
+    errors++;
   } else {
-    console.log('✅ sitemap.xml verified with valid Google Image XML format & canonical domain.');
+    console.log('✅ sitemap.xml verified with valid Google Image XML format & canonical domain https://designsshopee.in');
+  }
+}
+
+const distSitemapPath = path.join(root, 'dist', 'sitemap.xml');
+if (!fs.existsSync(distSitemapPath)) {
+  console.error('❌ Missing sitemap.xml in dist root');
+  errors++;
+} else {
+  const distContent = fs.readFileSync(distSitemapPath, 'utf-8');
+  if (!distContent.startsWith('<?xml') || !distContent.includes('</urlset>')) {
+    console.error('❌ dist/sitemap.xml is not valid XML');
+    errors++;
+  } else {
+    console.log('✅ dist/sitemap.xml verified in production build output');
   }
 }
 
@@ -170,11 +187,11 @@ if (!fs.existsSync(robotsPath)) {
   errors++;
 } else {
   const rContent = fs.readFileSync(robotsPath, 'utf-8');
-  if (!rContent.includes('https://designsshopee.in/sitemap.xml')) {
-    console.error('❌ robots.txt does not point to https://designsshopee.in/sitemap.xml');
+  if (!rContent.includes('Sitemap: https://designsshopee.in/sitemap.xml')) {
+    console.error('❌ robots.txt does not point to exact canonical https://designsshopee.in/sitemap.xml');
     errors++;
   } else {
-    console.log('✅ robots.txt verified with correct sitemap reference.');
+    console.log('✅ robots.txt verified with correct canonical sitemap reference.');
   }
 }
 

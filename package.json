@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/discover-products.mjs && tsc && vite build && node scripts/prerender-seo.mjs && node scripts/verify-catalog.mjs",
+    "build": "node scripts/discover-products.mjs && node scripts/generate-sitemap.mjs && tsc && vite build && node scripts/prerender-seo.mjs && node scripts/verify-catalog.mjs",
     "discover": "node scripts/discover-products.mjs --force",
     "verify": "node scripts/verify-catalog.mjs",
     "preview": "vite preview"
