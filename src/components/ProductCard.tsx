@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, MessageCircle, ArrowUpRight, Layers } from 'lucide-react';
+import { ShoppingCart, MessageCircle, ArrowUpRight } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { OptimizedImage } from './OptimizedImage';
@@ -50,14 +50,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, priority = fa
             imageClassName="transition-transform duration-300 group-hover:scale-105 drop-shadow-xs"
             className="w-full h-full"
           />
-
-          {/* Multiple Images Indicator */}
-          {product.images && product.images.length > 1 && (
-            <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#262626]/85 backdrop-blur-xs text-[#FFFDF5] text-[10px] font-bold flex items-center gap-1 shadow-xs pointer-events-none">
-              <Layers className="w-3 h-3 text-[#C6A15B]" />
-              <span>{product.images.length} photos</span>
-            </div>
-          )}
 
           {/* Quick view indicator on hover */}
           <div className="absolute inset-0 bg-brand-dark/5 opacity-0 group-hover:opacity-100 transition-opacity hidden md:flex items-center justify-center pointer-events-none">

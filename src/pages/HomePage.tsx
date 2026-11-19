@@ -12,8 +12,7 @@ import {
   Phone, 
   CheckCircle2, 
   X,
-  SlidersHorizontal,
-  Layers
+  SlidersHorizontal
 } from 'lucide-react';
 import productsData from '../data/products.json';
 import { ProductCard } from '../components/ProductCard';
